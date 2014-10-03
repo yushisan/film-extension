@@ -162,47 +162,19 @@ define(function(require, exports, module) {
 				}
 			}
 
-			var webkitNotify = window.webkitNotifications,
-				notification = null;
-			var havePermission = webkitNotify.checkPermission();
-
-			// if (havePermission == 0) {
-
-				if (typeof webkitNotifications.createHTMLNotification == "function") {
-					var msgs = Local.get('msgs');
-					var msgArr = msgs ? JSON.parse(msgs) : [];
-
-					// if(self.firstMsg){
-					// 	msgArr = [];
-					// 	self.firstMsg = false;
-					// }
-					msgArr.push(msg);
-					Local.set('msgs', JSON.stringify(msgArr));
-					notification = webkitNotify.createHTMLNotification(chrome.extension.getURL("/app/notify2.html"));
-				} else {
-					notification = webkitNotify.createNotification(msg.img, msg.title, msg.text || '');
-				}
-				// notification.onshow = function() { // 30秒后自动关闭
-				// 	setTimeout(function() {
-				// 		notification.close();
-				// 	}, localStorage.getItem('desk_stop_time') * 1000);
-				// 	showBack && showBack();
-				// };
+				var notification =new Notification(msg.title, {
+						    icon: msg.img,
+						    body: msg.text || ''
+						  });
 				notification.onclick = function() { // 点击打开链接
 					window.open(Stat.addUrlStat(msg.link));
-					if (notification.cancel) {
-						notification.cancel();
-					} else if (notification.close) {
-						notification.close();
-					}
+					notification.close();
 					clickBack && clickBack();
 				};
-				notification.show();
+				//notification.show();
 				(function(n) {
 					setTimeout(function() {
-						if (n.cancel) {
-							n.cancel();
-						} else if (n.close) {
+				    if (n.close) {
 							n.close();
 						}
 					}, localStorage.getItem('desk_stop_time') * 1000);
