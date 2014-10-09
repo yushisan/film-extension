@@ -30,8 +30,12 @@ define(function(require, exports, module) {
 		 * 拉数据回调
 		 * @return {[type]} [description]
 		 */
-		pullBack:function(result){
-			this.toDb(JSON.parse(result));
+		pullBack:function(text){
+			var mchs = text.match(/[\w]+\((.*)\)/);
+			var result = JSON.parse(mchs && mchs[1] ? mchs[1] : {});
+
+			this.toDb(result['list'], -1);
+			//this.toDb(JSON.parse(result));
 		},
 		/**
 		 * pull数据入库完成回调

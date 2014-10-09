@@ -22,20 +22,13 @@ define(function(require, exports, module) {
         var bgWindow = chrome.extension.getBackgroundPage();
 
         var Notify = require('../bg/notify/notify'),
-            // DbMsg = require('../bg/db/msg'),
-            // DbLow = require('../bg/db/low'),
-            // DbPost9 = require('../bg/db/post9'),
             DbMsg = bgWindow.Msg,
             DbTrailer = bgWindow.Trailer,
-            DbPost9 = bgWindow.Post9,
             Stat = require('../bg/util/stat');
 
-        var url_low = 'http://www.etao.com/api/get-api-page.html?pageID=1&category=all&timestamp&_ksTS=1379066289859_475&callback=jsonp476&tab_type=lowest';
-        var url_post = "http://www.etao.com/api/get-api-page.html?pageID=1&category=all&timestamp&_ksTS=1379066434795_574&callback=jsonp575&tab_type=mailfree";
-        var see_more_url = {
+       var see_more_url = {
             '1': 'http://film.qq.com/theater.html',
-            '2': 'http://film.qq.com/theater.html?page=trailer',
-            '3': 'http://film.qq.com/theater.html?page=trailer'
+            '2': 'http://film.qq.com/theater.html?page=trailer'
         };
 
         var pageNo = 1,
@@ -44,17 +37,13 @@ define(function(require, exports, module) {
 
         function rendPage(ty, back) {
             switch (ty) {
-                case '1': //今日推荐
+                case '1': //院线新片
                     rendTodayPage(back);
                     curLiTy = '1';
                     return;
-                case '2': //品牌最低价
+                case '2': //即将上映
                     rendTrailerPage(back);
                     curLiTy = '2';
-                    break;
-                case '3': //9.9包邮
-                    rendPost9Page(back);
-                    curLiTy = '3';
                     break;
             }
         }
@@ -97,26 +86,6 @@ define(function(require, exports, module) {
 
         }
 
-        function rendPost9Page(back) {
-
-            DbPost9.selectByPage(function(data) {
-                if (data.length <= 0) {
-                    return;
-                }
-                if (pageNo == 1) {
-                    $('#J_post_c').html(getHtml(3, data));
-                } else {
-                    $('#J_post_c').append(getHtml(3, data));
-                }
-                DbPost9.updateReadAll();
-                back();
-
-                pageNo++;
-
-            }, pageNo, 30);
-
-        }
-
         function getHtml(ty, data) {
             var html = '',
                 i = 0,
@@ -134,16 +103,16 @@ define(function(require, exports, module) {
         function getTodayHtml(obj) {
             return '<div class="today-item dib-wrap">\
                         <div class="item-img dib">' + (obj.seen == 0 ? '<i class="item-new"></i>' : '<i class="item-new item-new-old"></i>') +
-                '<a href="' + obj.buy_link + '" target="_blank">\
+                '<a href="' + obj.buy_link + '?ptag=film.extension.chrome" target="_blank">\
                                 <img src="' + obj.image_url + '" style="width:120px;" />\
                             </a>\
                         </div>\
                         <div class="item-side dib">\
-                            <h2 class="item-title"><a href="' + obj.buy_link + '" target="_blank">' + obj.title + '</a></h2>\
+                            <h2 class="item-title"><a href="' + obj.buy_link + '?ptag=film.extension.chrome" target="_blank">' + obj.title + '</a></h2>\
                             <br/>'+obj.description+'\
                             <div class="item-sub clearfix">\
                                 <span class="item-time">' + formatDate(obj.pub_date) + '</span>\
-                                <a href="' + obj.buy_link + '" target="_blank" class="item-buy-bt">立即观看</a>\
+                                <a href="' + obj.buy_link + '?ptag=film.extension.chrome" target="_blank" class="item-buy-bt">立即观看</a>\
                             </div>\
                         </div>\
                     </div>';
@@ -152,12 +121,12 @@ define(function(require, exports, module) {
          function getTrailerHtml(obj) {
             return '<div class="today-item dib-wrap">\
                         <div class="item-img dib">' + (obj.is_read == 0 ? '<i class="item-new"></i>' : '<i class="item-new item-new-old"></i>') +
-                '<a href="' + obj.url + '" target="_blank">\
+                '<a href="' + obj.url + '?ptag=film.extension.chrome" target="_blank">\
                                 <img src="' + obj.pic + '" style="width:120px;" />\
                             </a>\
                         </div>\
                         <div class="item-side dib">\
-                            <h2 class="item-title"><a href="' + obj.url + '" target="_blank">' + obj.title + '</a></h2>\
+                            <h2 class="item-title"><a href="' + obj.url + '?ptag=film.extension.chrome" target="_blank">' + obj.title + '</a></h2>\
                             <br/>'+obj.desc+'\
                             <div class="item-sub clearfix">\
                                 <span class="item-time">' + obj.uptime + '</span>\
@@ -165,34 +134,6 @@ define(function(require, exports, module) {
                             </div>\
                         </div>\
                     </div>';
-        }
-
-        function getLowHtml(obj) {
-            return '<div class="low-item dib">\
-                        <div class="item-img">\
-                            <a href="' + obj.link + '" target="_blank">\
-                                <img src="' + obj.img_url + '_130x130" />\
-                            </a>\
-                        </div>\
-                        <div class="item-shop">' + obj.seller_name + '</div>\
-                        <h2 class="item-title"><a href="' + obj.link + '" title="' + obj.title + '" target="_blank">' + obj.title + '</a></h2>\
-                        <div class="item-price">￥<span class="price">' + obj.final_price + '</span></div>' + (obj.comment ? '<div class="item-from">' + obj.comment + '</div>' : '') +
-                '</div>';
-        }
-
-        function getPostHtml(obj) {
-            return '<div class="post-item dib">\
-                    <div class="item-img">\
-                        <a href="' + obj.link + '" target="_blank">\
-                            <img src="' + obj.img_url + '_130x130" />\
-                        </a>\
-                    </div>' + (obj.sellcnt ? ('<div class="item-shop">月销量' + obj.sellcnt + '件</div>') : '') +
-                '<h2 class="item-title"><a href="' + obj.link + '" title="' + obj.title + '" target="_blank">' + obj.title + '</a></h2>\
-                    <div class="item-sub clearfix">\
-                        <div class="item-price">￥<span class="price">' + obj.final_price + '</span></div>\
-                        <a class="item-save">' + obj.discount + '折</a>\
-                    </div>\
-                </div>';
         }
 
         function formatDate(time) {

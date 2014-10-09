@@ -35,8 +35,6 @@ define(function(require, exports, module) {
 			var result = JSON.parse(mchs && mchs[1] ? mchs[1] : {});
 
 			this.toDb(result['list'], -1);
-
-			//this.toDb(JSON.parse(result));
 		}
 	});
 

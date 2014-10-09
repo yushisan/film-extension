@@ -8,8 +8,8 @@ define(function(require, exports, module) {
 
     //请求数据地址
     CONFIG['url'] = {
-        'theater':'http://p30.video.qq.com/extension/theater.json',
-         'trailer':'http://sns.video.qq.com/fcgi-bin/dlib/dataout_pc?auto_id=1472&otype=json&callback=jsonp'
+        'theater':'http://sns.video.qq.com/fcgi-bin/dlib/dataout_pc?auto_id=1471&otype=json&callback=jsonp',
+        'trailer':'http://sns.video.qq.com/fcgi-bin/dlib/dataout_pc?auto_id=1472&otype=json&callback=jsonp'
     };
 
     //各种数量
