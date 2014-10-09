@@ -163,14 +163,11 @@ define(function(require, exports, module) {
             // var notification = window.webkitNotifications.createNotification(
             //     NOTI_TEST.img, NOTI_TEST.title, NOTI_TEST.des);
 
-            var NOTI_TEST = CONFIG["notify_test"],
-                webkitNotify = window.webkitNotifications,
-                notification = null;
-            if (typeof webkitNotifications.createHTMLNotification == "function") {
-                notification = webkitNotify.createHTMLNotification(chrome.extension.getURL("/app/notify.html"));
-            } else {
-                notification = webkitNotify.createNotification(NOTI_TEST.img, NOTI_TEST.title, NOTI_TEST.des);
-            }
+            var NOTI_TEST = CONFIG["notify_test"];
+                            var notification =new Notification(NOTI_TEST.title, {
+                            icon: NOTI_TEST.img,
+                            body: NOTI_TEST.des
+                          });
 
             notification.onshow = function() { // 30秒后自动关闭
                 console.log('is_notify_desk ->' + localStorage.getItem('desk_stop_time') * 1000);
@@ -182,7 +179,6 @@ define(function(require, exports, module) {
                 window.open("http://www.etao.com/?from=etaoyouhui");
                 notification.close();
             };
-            notification.show();
         });
 
         Stat.addAEvent();

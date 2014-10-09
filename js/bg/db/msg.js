@@ -43,22 +43,22 @@ define(function(require, exports, module) {
         formatInsert: function(item) {
             return {
                 checkFields: [
-                    item.link,
+                    item.url,
                     (item.title || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
                 ],
                 insertFields: [
                     (item['title'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
-                    (item['context'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
-                    item['link'],
-                    item['link'],
-                    item['link'],
-                    item['tfsPic'],
-                    'etao',
-                    new Date(item.onlineTime).getTime(),
+                    (item['brief'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
+                    item['url'],
+                    item['url'],
+                    item['url'],
+                    item['pic'],
+                    'hlw',
+                    new Date(item.checkuptime).getTime(),
                     0,
                     0,
-                    (item['preTitle'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
-                    (item['saleTitle'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+                    (item['title'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
+                    (item['title'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
                 ]
             };
         },

@@ -13,6 +13,11 @@ define(function(require, exports, module) {
     var $ = require('jQuery');
     var chrome = window.chrome || window.sogouExplorer; //chrome 或 sougou
 
+    if (!chrome.cookies) {
+        chrome.cookies = chrome.experimental.cookies;
+    }
+
+
     $(function() {
         var bgWindow = chrome.extension.getBackgroundPage();
 
@@ -21,18 +26,17 @@ define(function(require, exports, module) {
             // DbLow = require('../bg/db/low'),
             // DbPost9 = require('../bg/db/post9'),
             DbMsg = bgWindow.Msg,
+            DbTrailer = bgWindow.Trailer,
             DbPost9 = bgWindow.Post9,
             Stat = require('../bg/util/stat');
 
         var url_low = 'http://www.etao.com/api/get-api-page.html?pageID=1&category=all&timestamp&_ksTS=1379066289859_475&callback=jsonp476&tab_type=lowest';
         var url_post = "http://www.etao.com/api/get-api-page.html?pageID=1&category=all&timestamp&_ksTS=1379066434795_574&callback=jsonp575&tab_type=mailfree";
         var see_more_url = {
-            '1': 'http://www.etao.com/?from=etaoyouhui&tab_type=feed',
-            '2': 'http://www.etao.com/?from=etaoyouhui&tab_type=lowest',
-            '3': 'http://www.etao.com/?from=etaoyouhui&tab_type=mailfree'
+            '1': 'http://film.qq.com/theater.html',
+            '2': 'http://film.qq.com/theater.html?page=trailer',
+            '3': 'http://film.qq.com/theater.html?page=trailer'
         };
-
-        var url_theater='http://film.qq.com/weixin/json/theater_1.json?timestmp=1411290132256';
 
         var pageNo = 1,
             curLiTy = 1;
@@ -40,16 +44,12 @@ define(function(require, exports, module) {
 
         function rendPage(ty, back) {
             switch (ty) {
-                case '0'://院线新片
-                     rendTheaterPage(back);
-                    curLiTy = '1';
-                    return;
                 case '1': //今日推荐
                     rendTodayPage(back);
                     curLiTy = '1';
                     return;
                 case '2': //品牌最低价
-                    rendLowPage(back);
+                    rendTrailerPage(back);
                     curLiTy = '2';
                     break;
                 case '3': //9.9包邮
@@ -57,25 +57,6 @@ define(function(require, exports, module) {
                     curLiTy = '3';
                     break;
             }
-        }
-
-      function rendTheaterPage(back) {
-            DbMsg.selectByPage(function(data) {
-                if (data.length <= 0) {
-                    setTimeout(function() {
-                        rendTheaterPage(back);
-                    }, 500);
-                    return;
-                }
-                if (pageNo == 1) {
-                    $('#J_theater_c').html(getHtml(0, data));
-                } else {
-                    $('#J_theater_c').append(getHtml(0, data));
-                }
-                back();
-                pageNo++;
-            }, pageNo, 15);
-
         }
 
         function rendTodayPage(back) {
@@ -97,18 +78,18 @@ define(function(require, exports, module) {
 
         }
 
-        function rendLowPage(back) {
+        function rendTrailerPage(back) {
 
-            DbLow.selectByPage(function(data) {
+            DbTrailer.selectByPage(function(data) {
                 if (data.length <= 0) {
                     return;
                 }
                 if (pageNo == 1) {
-                    $('#J_low_c').html(getHtml(2, data));
+                    $('#J_trailer_c').html(getHtml(2, data));
                 } else {
-                    $('#J_low_c').append(getHtml(2, data));
+                    $('#J_trailer_c').append(getHtml(2, data));
                 }
-                DbLow.updateReadAll();
+                DbTrailer.updateReadAll();
                 back();
 
                 pageNo++;
@@ -140,7 +121,7 @@ define(function(require, exports, module) {
             var html = '',
                 i = 0,
                 len = data.length,
-                getStr =ty == 0 ? getTheaterHtml: ty == 1 ? getTodayHtml : ty == 2 ? getLowHtml : ty == 3 ? getPostHtml : null;
+                getStr = ty == 1 ? getTodayHtml : ty == 2 ? getTrailerHtml : ty == 3 ? getPostHtml : null;
 
             // len = len > 30 ? 30 : len;
 
@@ -150,35 +131,37 @@ define(function(require, exports, module) {
             return html;
         }
 
-        function getTheaterHtml(obj) {
+        function getTodayHtml(obj) {
             return '<div class="today-item dib-wrap">\
                         <div class="item-img dib">' + (obj.seen == 0 ? '<i class="item-new"></i>' : '<i class="item-new item-new-old"></i>') +
                 '<a href="' + obj.buy_link + '" target="_blank">\
-                                <img src="' + obj.image_url + '_120x120" />\
+                                <img src="' + obj.image_url + '" style="width:120px;" />\
                             </a>\
                         </div>\
                         <div class="item-side dib">\
-                            <h2 class="item-title"><a href="' + obj.buy_link + '" target="_blank">' + obj.pre_title + '<strong class="item-title-em">' + obj.sale_title + '</strong></a></h2>\
+                            <h2 class="item-title"><a href="' + obj.buy_link + '" target="_blank">' + obj.title + '</a></h2>\
+                            <br/>'+obj.description+'\
                             <div class="item-sub clearfix">\
                                 <span class="item-time">' + formatDate(obj.pub_date) + '</span>\
-                                <a href="' + obj.buy_link + '" target="_blank" class="item-buy-bt">观看影片</a>\
+                                <a href="' + obj.buy_link + '" target="_blank" class="item-buy-bt">立即观看</a>\
                             </div>\
                         </div>\
                     </div>';
         }
 
-        function getTodayHtml(obj) {
+         function getTrailerHtml(obj) {
             return '<div class="today-item dib-wrap">\
-                        <div class="item-img dib">' + (obj.seen == 0 ? '<i class="item-new"></i>' : '<i class="item-new item-new-old"></i>') +
-                '<a href="' + obj.buy_link + '" target="_blank">\
-                                <img src="' + obj.image_url + '_120x120" />\
+                        <div class="item-img dib">' + (obj.is_read == 0 ? '<i class="item-new"></i>' : '<i class="item-new item-new-old"></i>') +
+                '<a href="' + obj.url + '" target="_blank">\
+                                <img src="' + obj.pic + '" style="width:120px;" />\
                             </a>\
                         </div>\
                         <div class="item-side dib">\
-                            <h2 class="item-title"><a href="' + obj.buy_link + '" target="_blank">' + obj.pre_title + '<strong class="item-title-em">' + obj.sale_title + '</strong></a></h2>\
+                            <h2 class="item-title"><a href="' + obj.url + '" target="_blank">' + obj.title + '</a></h2>\
+                            <br/>'+obj.desc+'\
                             <div class="item-sub clearfix">\
-                                <span class="item-time">' + formatDate(obj.pub_date) + '</span>\
-                                <a href="' + obj.buy_link + '" target="_blank" class="item-buy-bt">优惠购买</a>\
+                                <span class="item-time">' + obj.uptime + '</span>\
+                                <a href="' + obj.link + '" target="_blank" class="item-buy-bt">立即观看</a>\
                             </div>\
                         </div>\
                     </div>';
@@ -218,7 +201,7 @@ define(function(require, exports, module) {
                 str = String(str);
                 return str.length == 1 ? 0 + str : str;
             };
-            return addZero(date.getMonth() + 1) + '-' + addZero(date.getDate()) + ' ' + addZero(date.getHours()) + ':' + addZero(date.getMinutes());
+            return addZero(date.getYear()) + '-' +addZero(date.getMonth() + 1) + '-' + addZero(date.getDate());
         }
 
         $('#J_eato_tb').delegate('li', 'click', function() {

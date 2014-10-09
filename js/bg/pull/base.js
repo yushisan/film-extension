@@ -54,7 +54,10 @@ define(function(require, exports, module) {
 				dataType: attr.dataType,
 				success: function(result) {
 					self.pullBack(result);
-				}
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown){
+			        console.log(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+			    }
 			});
 			console.log('定时 pull 数据:' + (new Date().getTime() - ddd));
 			setTimeout(function() {

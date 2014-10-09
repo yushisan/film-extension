@@ -18,7 +18,7 @@ define(function(require, exports, module) {
 		attr: {
 			tbClass: Msg,
 
-			url: Config['url']['today'], //请求地址
+			url: Config['url']['theater'], //请求地址
 			params: { //请求参数
 			},
 			dataType: 'text', //数据类型

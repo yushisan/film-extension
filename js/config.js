@@ -1,23 +1,15 @@
-/**
- * Detail:配置信息
- * User: wb-wangling
- * Date: 13-9-4
- * Time: 下午3:25
- */
 define(function(require, exports, module) {
 
     var CONFIG = {};
 
     module.exports = CONFIG;
 
-    CONFIG['version'] = '0.4.7';
+    CONFIG['version'] = '0.1';
 
     //请求数据地址
     CONFIG['url'] = {
-        'theater': 'http://film.qq.com/weixin/json/theater_1.json?timestmp=', //院线新片
-        'today': 'http://www.etao.com/api/get-yh-jsonp.html?from=etaoyouhui', //今日推荐
-        'low': 'http://www.etao.com/api/get-api-page.html?pageID=1&category=all&timestamp&_ksTS=1379066289859_475&callback=jsonp476&tab_type=lowest', //品牌最低价
-        'post9': 'http://www.etao.com/api/get-api-page.html?pageID=1&category=all&timestamp&_ksTS=1379066434795_574&callback=jsonp575&tab_type=mailfree' //9.9包邮
+        'theater':'http://p30.video.qq.com/extension/theater.json',
+         'trailer':'http://sns.video.qq.com/fcgi-bin/dlib/dataout_pc?auto_id=1472&otype=json&callback=jsonp'
     };
 
     //各种数量
@@ -34,9 +26,9 @@ define(function(require, exports, module) {
 
     //设置页 弹窗测试
     CONFIG['notify_test'] = {
-        img: '../img/icon_80x80.png',
-        title: '一淘网',
-        des: '一淘网，最好的一站式购物入口，为您提供专业的比较购物搜索服务; 提供互联网最新最全的精彩购物活动，打折促销信息；团购网站大全信息。为了让您作出最精明的购物决策，我们一直在努力。'
+        img: '../img/icon_80.png',
+        title: '好莱坞影院',
+        des: '好莱坞会员是由腾讯视频面向广大用户推出的一项尊贵增值包月会员服务，会员可在好莱坞影院film.qq.com上观看来自华纳、环球、迪士尼等好莱坞电影豪门的上千部经典大片，且享有观看国内最新院线影片网络首播的特权。'
     };
 
     //消息类型
@@ -47,9 +39,9 @@ define(function(require, exports, module) {
 
     //数据库
     CONFIG['db'] = {
-        dbname: 'etao_notify_db',
+        dbname: 'film_extension_db',
         version: '',
-        display_name: 'etao notify db',
+        display_name: 'film extension db',
         size: '10*1024*1024'
     };
 

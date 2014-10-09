@@ -9,9 +9,9 @@ define(function(require, exports, module) {
     var SQL = {};
 
     SQL['db'] = {
-        dbname: 'etao_notify_db',
+        dbname: 'film_extension_db',
         version: '',
-        display_name: 'etao notify db',
+        display_name: 'film extension db',
         size: '10*1024*1024'
     };
 
@@ -79,69 +79,38 @@ define(function(require, exports, module) {
                 limit {1}, {2}'
     };
 
-    //历史最低价
-    SQL['low'] = {
-        name: 'low',
+    //即将上映
+    SQL['trailer'] = {
+        'name': 'trailer',
         //创建messages表
         'create': 'CREATE TABLE IF NOT EXISTS {0} \
                     (id integer primary key autoincrement, \
+                     cid,\
                      title, \
-                     link, \
-                     img_url, \
-                     seller_name, \
-                     final_price, \
-                     comment, \
-                     is_read \
+                     url, \
+                     pic, \
+                     desc, \
+                     uptime, \
+                     is_read\
                     )',
         'check':'select count(id) as count \
                         from {0} \
-                        where link = "{1}" or title = "{2}"',
+                        where cid = "{1}"',
         'inserts': 'insert into {0} \
-                (title, link, img_url, seller_name, final_price, comment, is_read) \
+                (cid,title,url,pic,desc,uptime,is_read) \
                 values \
-                (\'{1}\', "{2}", "{3}", "{4}", {5}, \'{6}\', {7})',
-        'select': 'select id, title, link, img_url,seller_name,final_price,comment,is_read \
+                ("{1}", \'{2}\', "{3}", "{4}", \'{5}\', "{6}", {7})',
+        'select': 'select id,cid,title,url,pic,desc,uptime,is_read \
                 from {0} order by id desc \
                 limit {1}',
         'unread': 'select count(*) as un_read from {0} where is_read=0',
         'update_read': 'update {0} set is_read = 1',
         'delete': 'delete from {0} where id = {1}',
-        'select_by_page': 'select id, title, link, img_url,seller_name,final_price,comment,is_read \
+        'select_by_page': 'select id,cid,title,url,pic,desc,uptime,is_read \
                 from {0} order by id desc \
                 limit {1}, {2}'
     };
 
-    //历史最低价
-    SQL['post9'] = {
-        name: 'post9',
-        //创建messages表
-        'create': 'CREATE TABLE IF NOT EXISTS {0} \
-                    (id integer primary key autoincrement, \
-                     title, \
-                     link, \
-                     img_url, \
-                     sellcnt, \
-                     final_price, \
-                     discount, \
-                     is_read \
-                    )',
-        'check':'select count(id) as count \
-                        from {0} \
-                        where link = "{1}" or title = "{2}"',
-        'inserts': 'insert into {0} \
-                (title, link, img_url, sellcnt, final_price, discount, is_read) \
-                values \
-                (\'{1}\', "{2}", "{3}", {4}, {5}, {6}, {7})',
-        'select': 'select id, title, link, img_url,sellcnt,final_price,discount,is_read \
-                from {0} order by id desc \
-                limit {1}',
-        'unread': 'select count(*) as un_read from {0} where is_read=0',
-        'update_read': 'update {0} set is_read = 1',
-        'delete': 'delete from {0} where id = {1}',
-        'select_by_page': 'select id, title, link, img_url,sellcnt,final_price,discount,is_read \
-                from {0} order by id desc \
-                limit {1}, {2}'
-    };
 
 
     module.exports = SQL;

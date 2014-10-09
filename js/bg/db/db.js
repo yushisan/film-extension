@@ -6,21 +6,17 @@
 define(function(require, exports, module) {
 
     var Msg = require('./msg'),
-    	Low = require('./low'),
-        Post9 = require('./post9'),
+        Trailer = require('./trailer'),
         Db = {};
 
     Db.init = function(back) {
 
         Msg.create(function(){
-        	// Low.create(function(){
-
-                Post9.create(function(){
-    	            console.log('------------db init end');
-                	back && back();
-                });
-
-        	// });
+            console.log('------------Msg db init end');
+            Trailer.create(function() {
+                console.log('------------Trailer db init end');
+                back && back();
+            });
         });
     };
 

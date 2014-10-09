@@ -6,7 +6,6 @@
 define(function(require, exports, module) {
 	var CONFIG = require('../../config');
 	var DbMsg = require('../db/msg');
-	var DbPost = require('../db/post9');
 	var Stat = require('../util/stat');
 	var chrome = window.chrome || window.sogouExplorer; //chrome 或 sougou
 	var $ = require('jQuery');
@@ -46,45 +45,7 @@ define(function(require, exports, module) {
 		 */
 		checkVersion: function() {
 			var self = this;
-
-			$.ajax({
-				type: 'post',
-				url: 'http://www.taobao.com/go/rgn/etao/etao_notify.php',
-				dataType: 'json',
-				success: function(result) {
-					var newV = +result.version.split('.').join('');
-					var curV = +CONFIG['version'].split('.').join('');
-					var browser;
-					var link;
-
-					Local.set('newVersion', result.version);
-					if (newV > curV) {
-						browser = Stat.getBrowser();
-						switch (browser) {
-							case 'chrome':
-							case 'taobao':
-							case 'liebao':
-								link = '';
-								break;
-							case '360chrome':
-							case 'quickchrome':
-								link = 'http://www.etao.com/etao_notify_360.crx?file=etao_notify_360.crx';
-								break;
-							case 'sougou':
-								link = '';
-								break;
-						}
-						setTimeout(function() {
-							self.show({
-								title: '版本更新',
-								text: '温馨提示：您的一淘优惠提醒插件有了新版本，' + result.version + '，请及时更新哦！',
-								img: chrome.extension.getURL('/img/icon_80x80.png'),
-								link: link
-							});
-						}, 5000);
-					}
-				}
-			});
+			//TODO:检测新版本
 		},
 
 		/**
@@ -126,15 +87,16 @@ define(function(require, exports, module) {
 		 */
 		showToday: function(msg) {
 			var self = this;
-
-			self.show({
-				'img': msg['image_url'] + '_80x80',
-				'title': ('【一淘推荐】' + msg.title).replace(/(【一淘推荐)】【(.*】.*)/, '$1 $2'),
-				'htmlText': ('【一淘推荐】' + msg['pre_title']).replace(/(【一淘推荐)】【(.*】.*)/, '$1 $2') + '<strong class="item-title-em">' + msg['sale_title'] + '</strong>',
-				'link': msg.buy_link
-			}, null, function() { //click back
-				DbMsg.updateSeen(msg.id, function() {
-					self.setIconText();
+			self.convertImgToBase64(msg.image_url, function(base64Img){ 
+				self.show({
+					'img':base64Img,
+					'title': msg.title,
+					'text': msg.description,
+					'link': msg.buy_link
+				}, null, function() { //click back
+					DbMsg.updateSeen(msg.id, function() {
+						self.setIconText();
+					});
 				});
 			});
 		},
@@ -225,6 +187,37 @@ define(function(require, exports, module) {
 			chrome.browserAction.setBadgeText({
 				text: ""
 			});
+		},
+		/**
+		*图片转为Base64并修改大小
+		*/
+		convertImgToBase64: function(src, callback) {
+			console.log(src);
+			// 创建一个 Image 对象
+			var image = new Image();
+			image.crossOrigin = "*";
+			// 绑定 load 事件处理器，加载完成后执行
+			image.onload = function() {
+				// 获取 canvas DOM 对象
+				var canvas = document.createElement('canvas');
+				image.width = 80;
+				image.height = 80;
+				// 获取 canvas的 2d 环境对象,
+				// 可以理解Context是管理员，canvas是房子
+				var ctx = canvas.getContext("2d");
+				// 重置canvas宽高
+				canvas.width = image.width;
+				canvas.height = image.height;
+				// 将图像绘制到canvas上
+				ctx.drawImage(image, 0, 0, image.width, image.height);
+				var dataURL = canvas.toDataURL('image/jpeg');
+				callback.call(this, dataURL);
+				// Clean up 
+				canvas = null;
+			};
+			// 设置src属性，浏览器会自动加载。
+			// 记住必须先绑定事件，才能设置src属性，否则会出同步问题。
+			image.src = src;
 		}
 	};
 
