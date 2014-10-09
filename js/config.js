@@ -4,7 +4,7 @@ define(function(require, exports, module) {
 
     module.exports = CONFIG;
 
-    CONFIG['version'] = '0.1';
+    CONFIG['version'] = '0.1.1';
 
     //请求数据地址
     CONFIG['url'] = {
