@@ -22,7 +22,7 @@ define(function(require, exports, module) {
         var bgWindow = chrome.extension.getBackgroundPage();
 
         var Notify = require('../bg/notify/notify'),
-            DbMsg = bgWindow.Msg,
+            DbTheater = bgWindow.Theater,
             DbTrailer = bgWindow.Trailer,
             Stat = require('../bg/util/stat');
 
@@ -49,7 +49,7 @@ define(function(require, exports, module) {
         }
 
         function rendTodayPage(back) {
-            DbMsg.selectByPage(function(data) {
+            DbTheater.selectByPage(function(data) {
                 if (data.length <= 0) {
                     setTimeout(function() {
                         rendTodayPage(back);
@@ -102,17 +102,20 @@ define(function(require, exports, module) {
 
         function getTodayHtml(obj) {
             return '<div class="today-item dib-wrap">\
-                        <div class="item-img dib">' + (obj.seen == 0 ? '<i class="item-new"></i>' : '<i class="item-new item-new-old"></i>') +
-                '<a href="' + obj.buy_link + '?ptag=film.extension.chrome" target="_blank">\
-                                <img src="' + obj.image_url + '" style="width:120px;" />\
+                        <div class="item-img dib">' + (obj.is_read == 0 ? '<i class="item-new"></i>' : '<i class="item-new item-new-old"></i>') +
+                '<a href="' + obj.url + '?ptag=film.extension.chrome" target="_blank">\
+                                <img src="' + obj.pic + '" style="width:120px;" />\
                             </a>\
                         </div>\
                         <div class="item-side dib">\
-                            <h2 class="item-title"><a href="' + obj.buy_link + '?ptag=film.extension.chrome" target="_blank">' + obj.title + '</a></h2>\
-                            <br/>'+obj.description+'\
+                            <h2 class="item-title"><a href="' + obj.url + '?ptag=film.extension.chrome" target="_blank">' + obj.title + '</a></h2>\
+                            <br/>'+obj.brief+'\
+                            <br/>导演：'+obj.dir+'\
+                            <br/>导演：'+obj.dir+'\
+                            <br/>主演：'+obj.actor+'\
                             <div class="item-sub clearfix">\
-                                <span class="item-time">' + formatDate(obj.pub_date) + '</span>\
-                                <a href="' + obj.buy_link + '?ptag=film.extension.chrome" target="_blank" class="item-buy-bt">立即观看</a>\
+                                <span class="item-time">' + obj.checkuptime + '</span>\
+                                <a href="' + obj.url + '?ptag=film.extension.chrome" target="_blank" class="item-buy-bt">立即观看</a>\
                             </div>\
                         </div>\
                     </div>';
@@ -128,12 +131,27 @@ define(function(require, exports, module) {
                         <div class="item-side dib">\
                             <h2 class="item-title"><a href="' + obj.url + '?ptag=film.extension.chrome" target="_blank">' + obj.title + '</a></h2>\
                             <br/>'+obj.desc+'\
+                            <br/>导演：'+obj.dir+'\
+                            <br/>主演：'+obj.actor+'\
                             <div class="item-sub clearfix">\
-                                <span class="item-time">' + obj.uptime + '</span>\
-                                <a href="' + obj.link + '" target="_blank" class="item-buy-bt">立即观看</a>\
+                                <span class="item-time">' + formatUptime(obj.uptime) + '</span>\
+                                <a href="' + obj.url + '" target="_blank" class="item-buy-bt">立即观看</a>\
                             </div>\
                         </div>\
                     </div>';
+        }
+
+        function formatUptime(str) {
+            var uptime = str;
+            if (!!str == false) {
+                uptime = "敬请期待";
+            } else {
+               var arr= str.split('.')
+                if (arr[0] >= '3000') {
+                    uptime = "敬请期待";
+                }
+            }
+            return uptime;
         }
 
         function formatDate(time) {
@@ -175,10 +193,7 @@ define(function(require, exports, module) {
                     content = $('#J_today_c');
                     break;
                 case '2':
-                    content = $('#J_low_c');
-                    break;
-                case '3':
-                    content = $('#J_post_c');
+                    content = $('#J_trailer_c');
                     break;
             }
 
@@ -201,29 +216,15 @@ define(function(require, exports, module) {
         });
         Notify.clearIconText();
 
-        // DbLow.getUnReadCount(function(count) {
-        //     var today = $('#J_tip_low');
-
-        //     if (count == 0) {
-        //         today.hide();
-        //     } else {
-        //         $('#J_tip_low_num').html(count);
-        //         today.show();
-        //     }
-        // });
-
-        // try{
-        // 
-
-        DbPost9.getUnReadCount(function(count) {
-            var today = $('#J_tip_post9');
+        DbTrailer.getUnReadCount(function(count) {
+            var trailer = $('#J_tip_trailer');
 
             console.log('----------------conunt = ' + count);
             if (count == 0) {
-                today.hide();
+                trailer.hide();
             } else {
-                $('#J_tip_post9_num').html(count);
-                today.show();
+                $('#J_tip_trailer_num').html(count);
+                trailer.show();
             }
         });
 

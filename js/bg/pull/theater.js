@@ -1,5 +1,5 @@
 /**
- * 院线新片
+ * 今日推荐
  * @param  {[type]} require [description]
  * @param  {[type]} exports [description]
  * @param  {[type]} module  [description]
@@ -10,19 +10,19 @@ define(function(require, exports, module) {
 		Config = require('../../config'),
 		$ = require('jQuery'),
 		Base = require('./base'),
-		Msg = require('../db/msg'),
+		TB = require('../db/theater'),
 		Theater = {};
 
 	$.extend(true, Theater, Base, {
 
 		attr: {
-			tbClass: Msg,
+			tbClass: TB,
 
 			url: Config['url']['theater'], //请求地址
 			params: { //请求参数
 			},
 			dataType: 'text', //数据类型
-			time: Config['timer']['today_pull'],
+			time: Config['timer']['theater_pull'],
 			eveMax: 50, //每次入库最大条数
 			max: 100 //库中数据最多条数
 		},
@@ -30,8 +30,12 @@ define(function(require, exports, module) {
 		 * 拉数据回调
 		 * @return {[type]} [description]
 		 */
-		pullBack:function(result){
-			this.toDb(JSON.parse(result));
+		pullBack:function(text){
+			var mchs = text.match(/[\w]+\((.*)\)/);
+			var result = JSON.parse(mchs && mchs[1] ? mchs[1] : {});
+
+			this.toDb(result['list'], -1);
+			//this.toDb(JSON.parse(result));
 		},
 		/**
 		 * pull数据入库完成回调
@@ -46,17 +50,18 @@ define(function(require, exports, module) {
 		 */
 		buildJson: function(item) {
 			return {
-				cid: item.cid,
-				title: item.title,
-				brief:item.brief,
+				cid:item.cid,
+				title:item.title,
 				year:item.year,
-				desc: item.desc,
 				url:item.url,
 				pic:item.pic,
+				dir:item.dir,
+				actor:item.actor,
+				brief:item.brief,
 				checkuptime:item.checkuptime,
 				douban:item.douban,
 				newscore:item.newscore,
-				pay:item.pay
+				status:item.status
 			};
 		}
 
@@ -64,6 +69,6 @@ define(function(require, exports, module) {
 
 
 
-	module.exports = Today;
+	module.exports = Theater;
 
 });

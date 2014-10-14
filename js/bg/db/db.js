@@ -5,13 +5,12 @@
  */
 define(function(require, exports, module) {
 
-    var Msg = require('./msg'),
+    var Theater = require('./theater'),
         Trailer = require('./trailer'),
         Db = {};
 
     Db.init = function(back) {
-
-        Msg.create(function(){
+        Theater.create(function(){
             console.log('------------Msg db init end');
             Trailer.create(function() {
                 console.log('------------Trailer db init end');

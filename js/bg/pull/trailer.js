@@ -22,7 +22,7 @@ define(function(require, exports, module) {
 			params: { //请求参数
 			},
 			dataType: 'text', //数据类型
-			time: Config['timer']['post9_pull'],
+			time: Config['timer']['trailer_pull'],
 			eveMax: 50, //每次入库最大条数
 			max: 100 //库中数据最多条数
 		},

@@ -90,7 +90,7 @@ define(function(require, exports, module) {
 					}
 					self.pullEnd && self.pullEnd();
 				});
-				TbClass.deleteMore && TbClass.deleteMore();
+				//TbClass.deleteMore && TbClass.deleteMore();
 			}, order || 1);
 
 		},

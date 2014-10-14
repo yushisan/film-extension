@@ -5,7 +5,7 @@
  */
 define(function(require, exports, module) {
 	var CONFIG = require('../../config');
-	var DbMsg = require('../db/msg');
+	var DbTheater = require('../db/theater');
 	var Stat = require('../util/stat');
 	var chrome = window.chrome || window.sogouExplorer; //chrome 或 sougou
 	var $ = require('jQuery');
@@ -29,11 +29,11 @@ define(function(require, exports, module) {
 					self.checkVersion();
 				} else {
 					self.setIconText();
-					DbMsg.select(CONFIG['msg_ty']['new'], function(data) {
+					DbTheater.select(CONFIG['msg_ty']['new'], function(data) {
 						data.length > 0 && self.showToday(data[0]);
 
 						// 将所有的记录标记为已通知
-						DbMsg.markAllNotifyed();
+						DbTheater.markAllNotifyed();
 					}, 1);
 				}
 			});
@@ -59,7 +59,7 @@ define(function(require, exports, module) {
 			console.log('----------------firstLoginShowMessage');
 			self.setIconText();
 			// 查找最新的三条
-			DbMsg.select(CONFIG['msg_ty']['new'], function(data) {
+			DbTheater.select(CONFIG['msg_ty']['new'], function(data) {
 				if (data.length > 0) {
 					// 展示最新的三条记录
 					function _show(i) {
@@ -76,7 +76,7 @@ define(function(require, exports, module) {
 					_show();
 				}
 				// 将所有的记录标记为已通知
-				DbMsg.markAllNotifyed();
+				DbTheater.markAllNotifyed();
 			}, 3);
 		},
 
@@ -87,14 +87,14 @@ define(function(require, exports, module) {
 		 */
 		showToday: function(msg) {
 			var self = this;
-			self.convertImgToBase64(msg.image_url, function(base64Img){ 
+			self.convertImgToBase64(msg.pic, function(base64Img){ 
 				self.show({
 					'img':base64Img,
 					'title': msg.title,
-					'text': msg.description,
-					'link': msg.buy_link
+					'text': msg.brief,
+					'link': msg.url
 				}, null, function() { //click back
-					DbMsg.updateSeen(msg.id, function() {
+					DbTheater.updateSeen(msg.id, function() {
 						self.setIconText();
 					});
 				});
@@ -155,7 +155,7 @@ define(function(require, exports, module) {
 		setIconText: function() {
 			console.log('---------------setIconText');
 
-			DbMsg.getUnSeenCount(function(count) {
+			DbTheater.getUnSeenCount(function(count) {
 
 				console.log('---------------setIconText count:' + count);
 				if (count == 0) {
@@ -173,7 +173,7 @@ define(function(require, exports, module) {
 		 * @return {[type]}      [description]
 		 */
 		getIconCount: function(back) {
-			DbMsg.getUnSeenCount(function(count) {
+			DbTheater.getUnSeenCount(function(count) {
 				back(count);
 			});
 		},
@@ -183,7 +183,7 @@ define(function(require, exports, module) {
 		 * @return {[type]} [description]
 		 */
 		clearIconText: function() {
-			DbMsg.updateSeenAll();
+			DbTheater.updateSeenAll();
 			chrome.browserAction.setBadgeText({
 				text: ""
 			});

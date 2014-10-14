@@ -4,14 +4,14 @@
 
 define(function(require, exports, module) {
 	var $ = require('jQuery'),
-		Today = require('./today'),
+		Theater = require('./theater'),
 		Trailer = require('./trailer'),
 		Pull = {};
 
 
 	Pull.start = function(back){
 
-		Today.start(function(){
+		Theater.start(function(){
 			console.log('-------today pull end---');
 				Trailer.start(function(){
 					console.log('-------trailer pull end---');
