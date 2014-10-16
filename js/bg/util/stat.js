@@ -9,7 +9,7 @@ define(function(require, exports, module) {
     var UA = require('./ua');
 
     /**
-     * url上添加埋点tb_lm_id=etaocj_浏览器id
+     * url上添加ptag=film.extension.浏览器id
      * @param {[type]} url [description]
      */
     function addUrlStat(url) {
@@ -19,13 +19,13 @@ define(function(require, exports, module) {
             var args = arguments;
             var $1 = args[1],
                 $3 = args[3];
-            var param = 'tb_lm_id=etaocj_' + _getBrowserParam();
-            var install = _isInstall() ? '' : ('&' + param + '_install');
+            var param = 'film.extension.' + _getBrowserParam();
+            //var install = _isInstall() ? '' : ('&' + param + '_install');
 
             //是否是最新版本
-            param = localStorage.getItem('newVersion') == CONFIG['version'] ? param + 'new' : param;
+            //param = localStorage.getItem('newVersion') == CONFIG['version'] ? param + 'new' : param;
 
-            return $1 + '?' + param + install + ($3 ? '&' + $3 : '');
+            return $1 + '?ptag=' + param + ($3 ? '&' + $3 : '');
         });
     }
 
@@ -50,6 +50,7 @@ define(function(require, exports, module) {
                 return true;
             }
         }
+        url=url.replace(/[\?&#](ptag)=[^&#]+/gi,""); //去除自带的ptag
         window.open(addUrlStat(url));
         return false;
     }

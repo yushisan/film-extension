@@ -37,12 +37,17 @@ define(function(require, exports, module) {
                     item.cid
                 ],
                 insertFields: [
-                    item.cid,
-                    item.title.replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
-                    item.url,
-                    item.pic,
-                    item.desc.replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
-                    item.checkuptime,
+                    item['cid'],
+                    (item['title'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
+                    item['year'],
+                    item['url'],
+                    item['pic'],
+                    (item['dir']||'').replace(/\+/g,';'),
+                    (item['actor']||'').replace(/\+/g,';'),
+                    (item['brief'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
+                    item['checkuptime'],
+                    item['douban'],
+                    (item['newscore'] || '').substring(0, 3),
                     0
                 ]
             };
@@ -89,7 +94,7 @@ define(function(require, exports, module) {
          * @return {[type]} [description]
          */
         updateReadAll: function(back) {
-            this.executeSql(TB_SQL['update_read'], [
+            this.executeSql(TB_SQL['update_read_all'], [
                 TB_NAME
             ], function(rs) {
                 back && back();

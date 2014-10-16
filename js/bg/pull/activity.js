@@ -10,19 +10,19 @@ define(function(require, exports, module) {
 		Config = require('../../config'),
 		$ = require('jQuery'),
 		Base = require('./base'),
-		TB = require('../db/theater'),
-		Theater = {};
+		TB = require('../db/activity'),
+		Activity = {};
 
-	$.extend(true, Theater, Base, {
+	$.extend(true, Activity, Base, {
 
 		attr: {
 			tbClass: TB,
 
-			url: Config['url']['theater'], //请求地址
+			url: Config['url']['activity'], //请求地址
 			params: { //请求参数
 			},
 			dataType: 'text', //数据类型
-			time: Config['timer']['theater_pull'],
+			time: Config['timer']['activity_pull'],
 			eveMax: 50, //每次入库最大条数
 			max: 100 //库中数据最多条数
 		},
@@ -35,7 +35,6 @@ define(function(require, exports, module) {
 			var result = JSON.parse(mchs && mchs[1] ? mchs[1] : {});
 
 			this.toDb(result['list'], -1);
-			//this.toDb(JSON.parse(result));
 		},
 		/**
 		 * pull数据入库完成回调
@@ -50,18 +49,14 @@ define(function(require, exports, module) {
 		 */
 		buildJson: function(item) {
 			return {
-				cid:item.cid,
 				title:item.title,
-				year:item.year,
-				url:item.url,
 				pic:item.pic,
-				dir:item.dir,
-				actor:item.actor,
-				brief:item.brief,
-				checkuptime:item.checkuptime,
-				douban:item.douban,
-				newscore:item.newscore,
-				status:item.status
+				url:item.url,
+				desc:item.desc,
+				level:item.level,
+				start:item.start,
+				end:item.end,
+				type:item.type
 			};
 		}
 
@@ -69,6 +64,6 @@ define(function(require, exports, module) {
 
 
 
-	module.exports = Theater;
+	module.exports = Activity;
 
 });

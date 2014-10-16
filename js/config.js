@@ -9,13 +9,15 @@ define(function(require, exports, module) {
     //请求数据地址
     CONFIG['url'] = {
         'theater':'http://sns.video.qq.com/fcgi-bin/dlib/dataout_pc?auto_id=1471&otype=json&callback=jsonp',
-        'trailer':'http://sns.video.qq.com/fcgi-bin/dlib/dataout_pc?auto_id=1472&otype=json&callback=jsonp'
+        'trailer':'http://sns.video.qq.com/fcgi-bin/dlib/dataout_pc?auto_id=1472&otype=json&callback=jsonp',
+        'activity':'http://sns.video.qq.com/fcgi-bin/dlib/dataout_pc?auto_id=1480&otype=json&callback=jsonp'
     };
 
     //定时器间隔时间设置
     CONFIG['timer'] = {
-        'theater_pull': 5 * 60 * 1000, //拉今日推荐数据时间间隔
-        'trailer_pull': 5 * 60 * 1000 //拉9.9包邮数据时间间隔
+        'theater_pull': 5 * 60 * 1000, 
+        'trailer_pull': 5 * 60 * 1000,
+        'activity_pull': 5 * 60 * 1000
     };
 
     //设置页 弹窗测试
@@ -29,14 +31,6 @@ define(function(require, exports, module) {
     CONFIG['msg_ty'] = {
         'new': 0, //新消息
         'nodifyed': 1, //已通知
-    };
-
-    //数据库
-    CONFIG['db'] = {
-        dbname: 'film_extension_db',
-        version: '',
-        display_name: 'film extension db',
-        size: '10*1024*1024'
     };
 
 });

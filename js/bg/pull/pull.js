@@ -6,6 +6,7 @@ define(function(require, exports, module) {
 	var $ = require('jQuery'),
 		Theater = require('./theater'),
 		Trailer = require('./trailer'),
+		Activity = require('./activity'),
 		Pull = {};
 
 
@@ -15,7 +16,10 @@ define(function(require, exports, module) {
 			console.log('-------today pull end---');
 				Trailer.start(function(){
 					console.log('-------trailer pull end---');
-					back && back();
+					Activity.start(function(){
+						console.log('-------activity pull end---');
+						back && back();
+					});
 				});
 		});
 

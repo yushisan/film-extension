@@ -7,6 +7,7 @@ define(function(require, exports, module) {
 
     var Theater = require('./theater'),
         Trailer = require('./trailer'),
+        Activity = require('./activity'),
         Db = {};
 
     Db.init = function(back) {
@@ -14,7 +15,10 @@ define(function(require, exports, module) {
             console.log('------------Msg db init end');
             Trailer.create(function() {
                 console.log('------------Trailer db init end');
-                back && back();
+                Activity.create(function() {
+                    console.log('------------Activity db init end');
+                    back && back();
+                });
             });
         });
     };

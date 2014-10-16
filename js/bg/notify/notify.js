@@ -22,7 +22,7 @@ define(function(require, exports, module) {
 		start: function() {
 			var self = this;
 
-			$(document).on('todayPllEnd', function() {
+			$(document).on('dataPllEnd', function() {
 				if (self.firstMsg) {
 					self.firstMsg = false;
 					self.firstShowMsg();
@@ -94,7 +94,7 @@ define(function(require, exports, module) {
 					'text': msg.brief,
 					'link': msg.url
 				}, null, function() { //click back
-					DbTheater.updateSeen(msg.id, function() {
+					DbTheater.updateRead(msg.id, function() {
 						self.setIconText();
 					});
 				});
@@ -155,7 +155,7 @@ define(function(require, exports, module) {
 		setIconText: function() {
 			console.log('---------------setIconText');
 
-			DbTheater.getUnSeenCount(function(count) {
+			DbTheater.getUnReadCount(function(count) {
 
 				console.log('---------------setIconText count:' + count);
 				if (count == 0) {
@@ -173,7 +173,7 @@ define(function(require, exports, module) {
 		 * @return {[type]}      [description]
 		 */
 		getIconCount: function(back) {
-			DbTheater.getUnSeenCount(function(count) {
+			DbTheater.getUnReadCount(function(count) {
 				back(count);
 			});
 		},
@@ -183,7 +183,7 @@ define(function(require, exports, module) {
 		 * @return {[type]} [description]
 		 */
 		clearIconText: function() {
-			DbTheater.updateSeenAll();
+			DbTheater.updateReadAll();
 			chrome.browserAction.setBadgeText({
 				text: ""
 			});
