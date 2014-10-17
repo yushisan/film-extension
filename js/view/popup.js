@@ -23,7 +23,8 @@ define(function(require, exports, module) {
             DbTheater = bgWindow.Theater,
             DbTrailer = bgWindow.Trailer,
             DbActivity = bgWindow.Activity,
-            Stat = require('../bg/util/stat');
+            Stat = require('../bg/util/stat'),
+            Login= require('./login');
 
        var more_url = {
             '1': 'http://film.qq.com/theater.html',
@@ -306,6 +307,123 @@ define(function(require, exports, module) {
                 tip.show();
             }
         });
+
+
+                function init(){
+            $('.btn_user_text').click(function(){
+                window.open("http://ui.ptlogin2.qq.com/cgi-bin/login?link_target=blank&target=self&low_login=1&style=11&hln_logo=&appid=532001601&f_url=loginerroralert&qlogin_auto_login=0&s_url=http%3A//v.qq.com/toolpages/redirect.html%3Fclientjumpurl%3Dhttp%253A//film.qq.com/%26jumpurl%3D");
+            });
+
+            Login.isLogin(function(islogin){
+                console.log(islogin);
+                if(!islogin){
+                    $('.avatar_user').hide();
+                    $('.btn_user_text').show();
+                }else{
+                     Login.getToken(function(token){
+                        getNick(token);
+                        Login.getUin(function(uin){
+                            getTicket(uin,token);
+                            getVipInfo(uin,token)
+                        });
+                    });
+                }
+            });
+        }
+
+        function getNick(token) {
+            $.ajax({
+                url: "http://c.video.qq.com/cgi-bin/login?otype=json&nes=1&low_login=1&callback=jsonp",
+                data: {
+                    g_tk: token
+                },
+                dataType: "text",
+                success: function(text) {
+                    var mchs = text.match(/[\w]+\((.*)\)/);
+                    var json = JSON.parse(mchs && mchs[1] ? mchs[1] : {});
+                    if (json && json.result && json.result.code == 0) {
+                        $('#head_img').attr('src', json.qqface);
+                        $('#nickname').text(json.nick);
+                    }
+                    console.log(json);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                }
+            });
+        }
+
+        function getTicket(uin,token) {
+            $.ajax({
+                url: "http://pay.video.qq.com/fcgi-bin/user_ticket?otype=json&callback=jsonp&low_login=1&status=1&_t=1&platform=1",
+                data: {
+                    g_tk: token,
+                    uin :uin
+                },
+                dataType: "text",
+                success: function(text) {
+                    var mchs = text.match(/[\w]+\((.*)\)/);
+                    var json = JSON.parse(mchs && mchs[1] ? mchs[1] : {});
+                    if (json && json.result && json.result.code == 0) {
+                        var num = parseInt(json.watch_tt, 10) + parseInt(json.vip_tt, 10);
+                        $("#ticket_num").html(num);
+                    }
+                    console.log(json);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                }
+            });
+        }
+
+        function getVipInfo(uin,token) {
+            $.ajax({
+                url: "http://pay.video.qq.com/fcgi-bin/payvip?otype=json&getannual=1&callback=jsonp&low_login=1&t=0&getqqvip=0",
+                data: {
+                    g_tk: token,
+                    uin :uin
+                },
+                dataType: "text",
+                success: function(text) {
+                    var mchs = text.match(/[\w]+\((.*)\)/);
+                    var json = JSON.parse(mchs && mchs[1] ? mchs[1] : {});
+                    if (json && json.result && json.result.code == 0) {
+                        if(json.vip==1){
+                            $(".icon_vip").removeClass("icon_notVip");
+                            if (json.level && json.level > 0) {
+                                $(".icon_vip > .num").show();
+                                $(".icon_vip > .num").addClass("num_" + json.level);
+                                $(".icon_vip > .num").text("等级" + json.level);
+                            } else {
+                                $(".icon_vip > .num").hide();
+                            }
+                            if (json.annualvip == 1) {
+                                $(".icon_year").addClass("icon_year_actived");
+                            }
+                            //$("#openvip").hide();
+
+                        }else{
+                            $(".icon_vip").addClass("icon_notVip");
+                            $(".icon_year").removeClass("icon_year_actived");
+                            if (json.level && json.level > 0) {
+                                $(".icon_vip > .num").show();
+                                $(".icon_vip > .num").addClass("num_" + json.level);
+                                $(".icon_vip > .num").text("等级" + json.level);
+                            } else {
+                                $(".icon_vip > .num").hide();
+                            }
+                            //$("#openvip").show();
+                        }
+                    }
+                    console.log(json);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                }
+            });
+        }
+
+        init();
 
         Stat.addAEvent();
     });

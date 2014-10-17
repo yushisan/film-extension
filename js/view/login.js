@@ -1,10 +1,12 @@
 //seajs配置
+/*
 seajs.config({
 	base: "../js/sea-modules/",
 	alias: {
 		"jQuery": "jquery/jquery/1.10.1/jquery-debug.js"
 	}
 });
+*/
 /**
  * 登录态
  * @param  {[type]} require [description]
@@ -13,7 +15,7 @@ seajs.config({
  * @return {[type]}         [description]
  */
 define(function(require, exports, module) {
-	var $ = require('jQuery'),
+	//var $ = require('jQuery'),
 
 		module.exports = {
 			/**
@@ -36,25 +38,40 @@ define(function(require, exports, module) {
 			 *
 			 * @return {String}
 			 */
-			getToken: function() {
-				var skey = this.getSkey(),
-					token = !!skey ? this.time33(skey) : "";
-				return token;
+			getToken: function(callback) {
+				var obj=this;
+				this.getSkey(function(skey){
+					var token = !!skey ? obj.time33(skey) : "";
+					if (callback) {
+						callback(token);
+					};
+				});
 			},
 
 			/**
 			 * 获取skey
 			 * @return {}
 			 */
-			getSkey: function() {
-
-				
-				var skey = Live.string.trim(Live.cookie.get("skey")).replace(/(^\s*)|(\s*$)/g, "");
-                return skey || Live.string.trim(Live.cookie.get("lskey"));
+			getSkey: function(callback) {
+				var obj=this;
+				obj.getCookie("skey",function(skey){
+					var skey=skey.replace(/(^\s*)|(\s*$)/g, "");
+					if(!skey){
+						obj.getCookie("lskey",function(lskey){
+							callback(lskey);
+						});
+					}else{
+						if (callback) {
+							callback(skey);
+						}
+					}
+				});
 			},
 
-			isLogin: function() {
-				return (txv.login.getUin() > 10000);
+			isLogin: function(callback) {
+				this.getUin(function(uin) {
+					callback && callback(uin > 10000)
+				});
 			},
 
 			/**
@@ -62,21 +79,45 @@ define(function(require, exports, module) {
 			 *
 			 * @return {Number}
 			 */
-			getUin: function() {
-				if (txv.login.getSkey() == "") {
-					return 0;
-				}
-				var uin = parseInt(Live.cookie.get(txv.login.config.uinCookie).replace(/^o0*/g, ""), 10);
-				if (!uin || uin <= 10000) {
-					uin = parseInt(Live.cookie.get(txv.login.config.luinCookie).replace(/^o0*/g, ""), 10);
-					if (!uin || uin <= 10000) {
-						return 0;
+			getUin: function(callback) {
+				var obj=this;
+				this.getSkey(function(skey) {
+					if (skey == "") {
+						callback && callback(0);
+					} else {
+						obj.getCookie("uin", function(suin) {
+							var uin = parseInt(suin.replace(/^o0*/g, ""), 10);
+							if (!uin || uin <= 10000) {
+								obj.getCookie("luin", function(sluin) {
+									uin = parseInt(sluin.replace(/^o0*/g, ""), 10);
+									if (!uin || uin <= 10000) {
+										uin = 0;
+									}
+									callback && callback(uin);
+								});
+							} else {
+								callback && callback(uin);
+							}
+						});
 					}
-				}
-				return uin;
+				});
 			},
 
-
+			getCookie:function(name,callback,domain) {
+				var url="http://film.qq.com";
+				if(domain){
+					url=["http://",domain].join('');
+				}
+				chrome.cookies.get({url: url,name: name},function(cookie) {
+					var value='';
+					if(cookie){
+						value=cookie.value;
+					}
+					if(callback){
+						callback(value);
+					}
+				});
+			}
 		};
 
 });

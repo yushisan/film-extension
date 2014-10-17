@@ -9,7 +9,7 @@ a:visited,a:focus,a:active{outline:0 none!important}
 .site_header .logo{float:left;display:inline-block;background-size:148px 40px;width:148px;height:40px;overflow:hidden;line-height:50}
 .site_header .channel_title{float:left;position:relative;display:inline-block;padding:1px 0 0 10px;font-size:15px;line-height:22px;color:#E4E4E4;font-weight:bold}
 .site_header .btn_user,.site_header .btn_user_text,.site_header .btn_search,.site_header .btn_user_avatar{float:right;width:40px;margin-left:2px;text-align:center}
-.site_header .btn_user_text{padding:0;margin-right:5px;line-height:44px;font-size:15px;color:#fff}
+.site_header .btn_user_text{padding:0;margin-top:13px;margin-right:10px;line-height:44px;font-size:15px;color:#fff}
 .site_header .icon_user{display:inline-block;background:transparent url(img/hollywood/common.png?max_age=86400&d=20140922104335) 0 0 no-repeat;background-size:144px 52px;overflow:hidden;margin-top:10px;background-position:-25px -30px;width:20px;height:20px;line-height:50}
 .site_header .btn_search{position:relative;height:44px;padding-top:0;margin-left:-8px}
 .site_header .btn_search img{margin-top:12px}

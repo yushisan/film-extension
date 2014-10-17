@@ -59,7 +59,7 @@ define(function(require, exports, module) {
         select: function(status, callback, size) {
             size = size || 400;
 
-            this.executeSql(MSG_SQL['select_messages'], [
+            this.executeSql(MSG_SQL['select'], [
                 TB_NAME,
                 status,
                 size
@@ -78,7 +78,7 @@ define(function(require, exports, module) {
         selectAll: function(callback, size) {
             size = size || 400;
 
-            this.executeSql(MSG_SQL['select_all_messages'], [
+            this.executeSql(MSG_SQL['select_all'], [
                 TB_NAME,
                 size
             ], function(rs) {
@@ -140,7 +140,7 @@ define(function(require, exports, module) {
          */
         updateStatus: function(msg_id, status, callback) {
             console.log('-------------updateStatusMsg');
-            this.executeSql(MSG_SQL['update_messages'], [
+            this.executeSql(MSG_SQL['update_flag'], [
                 TB_NAME,
                 status,
                 msg_id
@@ -153,9 +153,9 @@ define(function(require, exports, module) {
          * 把所有消息标记为已通知
          */
         markAllNotifyed: function(callback) {
-            this.executeSql(MSG_SQL['mark_all_readed_messages'], [
+            this.executeSql(MSG_SQL['update_flag_all'], [
                 TB_NAME,
-                CONFIG['msg_ty']['nodifyed']
+                CONFIG['msg_flag']['nodifyed']
             ], function() {
                 callback && callback();
             });

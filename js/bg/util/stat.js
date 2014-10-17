@@ -15,6 +15,10 @@ define(function(require, exports, module) {
     function addUrlStat(url) {
         var reg = /([^\?]*)(\?(.*))?/;
 
+        if(url){
+            url=url.replace(/[\?&#](ptag)=[^&#]+/gi,""); //去除自带的ptag
+        }
+
         return url.replace(reg, function() {
             var args = arguments;
             var $1 = args[1],
@@ -50,7 +54,6 @@ define(function(require, exports, module) {
                 return true;
             }
         }
-        url=url.replace(/[\?&#](ptag)=[^&#]+/gi,""); //去除自带的ptag
         window.open(addUrlStat(url));
         return false;
     }

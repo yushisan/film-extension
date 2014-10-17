@@ -6,6 +6,7 @@
 define(function(require, exports, module) {
 	var CONFIG = require('../../config');
 	var DbTheater = require('../db/theater');
+	var DbActivity = require('../db/activity');
 	var Stat = require('../util/stat');
 	var chrome = window.chrome || window.sogouExplorer; //chrome 或 sougou
 	var $ = require('jQuery');
@@ -29,11 +30,38 @@ define(function(require, exports, module) {
 					self.checkVersion();
 				} else {
 					self.setIconText();
-					DbTheater.select(CONFIG['msg_ty']['new'], function(data) {
-						data.length > 0 && self.showToday(data[0]);
-
+					DbTheater.select(CONFIG['msg_flag']['new'], function(data) {
+						if (data.length > 0) {
+							var item = data[0];
+							var msg = {
+								id: item.id,
+								title: item.title,
+								text: item.brief,
+								link: item.url,
+								img: item.pic,
+								type: 'theater'
+							};
+							self.showNotify(msg);
+						}
 						// 将所有的记录标记为已通知
 						DbTheater.markAllNotifyed();
+					}, 1);
+					// 查找最新的一条活动
+					DbActivity.select(CONFIG['msg_flag']['new'], function(data) {
+						if (data.length > 0) {
+							var item = data[0];
+							var msg = {
+								id: item.id,
+								title: item.title,
+								text: item.desc,
+								link: item.url,
+								img: item.pic,
+								type: 'activity'
+							};
+							self.showNotify(msg);
+						}
+						// 将所有的记录标记为已通知
+						DbActivity.markAllNotifyed();
 					}, 1);
 				}
 			});
@@ -56,17 +84,26 @@ define(function(require, exports, module) {
 			var self = this,
 				i = 0;
 
-			console.log('----------------firstLoginShowMessage');
+			console.log('----------------firstShowMessage');
 			self.setIconText();
-			// 查找最新的三条
-			DbTheater.select(CONFIG['msg_ty']['new'], function(data) {
+			// 查找最新的2条
+			DbTheater.select(CONFIG['msg_flag']['new'], function(data) {
 				if (data.length > 0) {
 					// 展示最新的三条记录
 					function _show(i) {
 						i = i || 0;
-						self.showToday(data[i]);
+						var item = data[i];
+						var msg = {
+							id: item.id,
+							title: item.title,
+							text: item.brief,
+							link: item.url,
+							img: item.pic,
+							type: 'theater'
+						};
+						self.showNotify(msg);
 						i++;
-						if (i >= 3) {
+						if (i >= 2) {
 							return;
 						}
 						setTimeout(function() {
@@ -77,26 +114,50 @@ define(function(require, exports, module) {
 				}
 				// 将所有的记录标记为已通知
 				DbTheater.markAllNotifyed();
-			}, 3);
+
+				// 查找最新的1条活动
+				DbActivity.select(CONFIG['msg_flag']['new'], function(data) {
+					if (data.length > 0) {
+						var item = data[0];
+						var msg = {
+							id: item.id,
+							title: item.title,
+							text: item.desc,
+							link: item.url,
+							img: item.pic,
+							type: 'activity'
+						};
+						self.showNotify(msg);
+					}
+					// 将所有的记录标记为已通知
+					DbActivity.markAllNotifyed();
+				}, 1);
+			}, 2);
 		},
 
 		/**
-		 * 今日推荐消息提醒
+		 * 显示消息提醒
 		 * @param  {[type]} msg [description]
 		 * @return {[type]}     [description]
 		 */
-		showToday: function(msg) {
+		showNotify: function(msg) {
 			var self = this;
-			self.convertImgToBase64(msg.pic, function(base64Img){ 
+			self.convertImgToBase64(msg.img, function(base64Img){
 				self.show({
 					'img':base64Img,
 					'title': msg.title,
-					'text': msg.brief,
-					'link': msg.url
+					'text': msg.text,
+					'link': msg.link
 				}, null, function() { //click back
-					DbTheater.updateRead(msg.id, function() {
-						self.setIconText();
-					});
+					if (msg.type = 'theater') {
+						DbTheater.updateRead(msg.id, function() {
+							self.setIconText();
+						});
+					}else if (msg.type = 'activity') {
+						DbActivity.updateRead(msg.id, function() {
+							self.setIconText();
+						});
+					}
 				});
 			});
 		},
@@ -154,27 +215,17 @@ define(function(require, exports, module) {
 		 */
 		setIconText: function() {
 			console.log('---------------setIconText');
-
-			DbTheater.getUnReadCount(function(count) {
-
-				console.log('---------------setIconText count:' + count);
-				if (count == 0) {
-					count = "";
-				}
-				chrome.browserAction.setBadgeText({
-					text: String(count)
+			DbTheater.getUnReadCount(function(theatercount) {
+				DbActivity.getUnReadCount(function(activitycount) {
+					var count=theatercount+activitycount;
+					console.log('---------------setIconText count:' + count);
+					if (count == 0) {
+						count = "";
+					}
+					chrome.browserAction.setBadgeText({
+						text: String(count)
+					});
 				});
-			});
-		},
-
-		/**
-		 * 得到icon上的count数
-		 * @param  {[type]} back [description]
-		 * @return {[type]}      [description]
-		 */
-		getIconCount: function(back) {
-			DbTheater.getUnReadCount(function(count) {
-				back(count);
 			});
 		},
 
@@ -192,7 +243,6 @@ define(function(require, exports, module) {
 		*图片转为Base64并修改大小
 		*/
 		convertImgToBase64: function(src, callback) {
-			console.log(src);
 			// 创建一个 Image 对象
 			var image = new Image();
 			image.crossOrigin = "*";

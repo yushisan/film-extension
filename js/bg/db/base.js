@@ -228,6 +228,11 @@ define(function(require, exports, module) {
          * @private
          */
         _formatSql: function(sql, arr) {
+        if(sql&&sql.replace){
+
+        }else{
+            console.log(sql);
+        }
             return sql.replace(/{(\d+)}/g, function(match, number) {
                 return typeof arr[number] != 'undefined' ? arr[number] : match;
             });
