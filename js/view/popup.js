@@ -284,7 +284,7 @@ define(function(require, exports, module) {
                 tip.show();
             }
             DbActivity.getUnReadCount(function(count) {
-                var tip = $('#J_tip_activity');
+                tip = $('#J_tip_activity');
                 console.log('----------------activity count = ' + count);
                 if (count == 0) {
                     tip.hide();
