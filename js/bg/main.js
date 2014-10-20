@@ -22,11 +22,10 @@ define(function(require) {
 
 		Local.init();
 		Db.init(function(){ //初始化db
-
+			
 			Pull.start(function(){ //启动定时拉数据
 			});
 
 			Notify.start(); //启动定时提醒
-
 		});
 });

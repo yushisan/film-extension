@@ -36,7 +36,7 @@ define(function(require, exports, module) {
         //检查表中某条数据是否存在
         'check': 'select count(id) as count  from {0} where cid = "{1}"',
         //得到未读消息
-        'unread': 'select count(*) as unseen_count from {0} where is_read = 0',
+        'unread': 'select count(*) as unread_count from {0} where is_read = 0',
         //设置消息为已读
         'update_read': 'update {0} set is_read = {1} where id = {2}',
         //设置所有消息为已读
@@ -75,7 +75,7 @@ define(function(require, exports, module) {
                 values \
                 ("{1}", \'{2}\', "{3}", "{4}", "{5}", "{6}", "{7}", \'{8}\', "{9}", "{10}", "{11}", {12})',
         'select': 'select * from {0} order by id desc limit {1}',
-        'unread': 'select count(*) as un_read from {0} where is_read=0',
+        'unread': 'select count(*) as unread_count from {0} where is_read=0',
         'update_read_all': 'update {0} set is_read = 1',
         'delete': 'delete from {0} where id = {1}',
         'select_by_page': 'select * from {0} order by id desc \
@@ -89,16 +89,16 @@ define(function(require, exports, module) {
         //创建表
         'create': 'CREATE TABLE IF NOT EXISTS {0} \
                     (id integer primary key autoincrement, \
-                    title,pic,url,desc,level,start,end,type,flag,is_read)',
+                    aid,title,pic,url,desc,level,start,end,type,flag,is_read)',
         //向表中插入数据
         'inserts': 'insert into {0} \
-                (title,pic,url,desc,level,start,end,type,flag,is_read) \
+                (aid,title,pic,url,desc,level,start,end,type,flag,is_read) \
                 values \
-                (\'{1}\', "{2}", "{3}", \'{4}\', "{5}", "{6}", "{7}", "{8}", {9}, {10})',
+                ({1},\'{2}\', "{3}", "{4}", \'{5}\', "{6}", "{7}", "{8}", "{9}", {10}, {11})',
         //检查表中某条数据是否存在
-        'check': 'select count(id) as count  from {0} where title = "{1}"',
+        'check': 'select count(id) as count  from {0} where aid = {1}',
         //得到未读消息
-        'unread': 'select count(*) as unseen_count from {0} where is_read = 0',
+        'unread': 'select count(*) as unread_count from {0} where is_read = 0',
         //设置消息为已读
         'update_read': 'update {0} set is_read = {1} where id = {2}',
         //设置所有消息为已读

@@ -8,7 +8,7 @@ define(function(require, exports, module) {
 	var DbTheater = require('../db/theater');
 	var DbActivity = require('../db/activity');
 	var Stat = require('../util/stat');
-	var chrome = window.chrome || window.sogouExplorer; //chrome 或 sougou
+	var chrome = window.chrome || window.sogouExplorer; //chrome 或 sogou
 	var $ = require('jQuery');
 	var Local = require('../local/local');
 	
@@ -184,7 +184,6 @@ define(function(require, exports, module) {
 					return;
 				}
 			}
-
 				var notification =new Notification(msg.title, {
 						    icon: msg.img,
 						    body: msg.text || ''
@@ -235,6 +234,7 @@ define(function(require, exports, module) {
 		 */
 		clearIconText: function() {
 			DbTheater.updateReadAll();
+			DbActivity.updateReadAll();
 			chrome.browserAction.setBadgeText({
 				text: ""
 			});

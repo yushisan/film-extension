@@ -71,7 +71,7 @@ define(function(require, exports, module) {
         switch (shell) {
             case 'chrome':
             case 'liebao':
-            case 'sougou':
+            case 'sogou':
             case 'taobao':
                 key = shell;
                 break;

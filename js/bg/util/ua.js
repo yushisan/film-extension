@@ -232,7 +232,7 @@ define(function(require, exports, module) {
                     }else if(/TaoBrowser/.test(ua)){ //淘宝浏览器
                         shell = 'taobao';
                     }else if(/SE.*MetaSr.*/.test(ua)){ //搜狗
-                        shell = 'sougou';
+                        shell = 'sogou';
                     }
                 }
                 // Safari

@@ -109,7 +109,7 @@ define(function(require, exports, module) {
             this.executeSql(MSG_SQL['unread'], [
                 TB_NAME
             ], function(rs) {
-                callback && callback(rs.rows.item(0).unseen_count);
+                callback && callback(rs.rows.item(0).unread_count);
             });
         },
         /**

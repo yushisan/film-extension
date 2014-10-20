@@ -1,5 +1,5 @@
 /**
- * 9块9包邮
+ * 即将上映
  * @param  {[type]} require [description]
  * @param  {[type]} exports [description]
  * @param  {[type]} module  [description]

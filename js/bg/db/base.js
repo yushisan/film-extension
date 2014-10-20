@@ -70,7 +70,7 @@ define(function(require, exports, module) {
                 len = Math.min(data.length, 100),
                 i = order > 0 ? 0 : (len - 1);
 
-            console.log('----insterts msg');
+            console.log('----insterts data');
             if (!self.db) {
                 self.db = window['db'] = self.open();
             }
@@ -81,16 +81,17 @@ define(function(require, exports, module) {
                             // self.db.transaction(function(tx) {
                             var msg = self.formatInsert(data[i]);
 
-
+                            //console.log(msg);
                             self._check(tx, msg, function(tx, msg, isExit) {
                                 if (isExit) {
+                                    //console.log("已经存在"+msg[0]);
                                     if (i == len - 1) {
                                         console.log('insert time:' + (new Date().getTime() - ddd));
                                         back && back();
                                     }
                                     return;
                                 }
-                                console.log('----begin instert msg');
+                                console.log('----begin instert data');
 
                                 self._insert(tx, msg.insertFields, function() {
                                     // console.log('----------------   i:' + i);
@@ -141,9 +142,7 @@ define(function(require, exports, module) {
             // console.log(this._formatSql(
             //     tbSql['inserts'], [tbSql['name']].concat(fields)
             // ));
-            tx.executeSql(this._formatSql(
-                    tbSql['inserts'], [tbSql['name']].concat(fields)
-                ), [],
+            tx.executeSql(this._formatSql(tbSql['inserts'], [tbSql['name']].concat(fields)), [],
                 function(tx, rs) {
                     console.log("_insert  success");
                     back && back();
@@ -151,6 +150,7 @@ define(function(require, exports, module) {
                     console.log('database error:' + error.message);
                 }
             );
+            //console.log(this._formatSql(tbSql['inserts'], [tbSql['name']].concat(fields)));
         },
 
         /**
@@ -220,6 +220,7 @@ define(function(require, exports, module) {
                         errorBack && errorBack(error);
                         console.log('database error:' + error.message);
                     });
+                //console.log(self._formatSql(sql, params));
             });
         },
 

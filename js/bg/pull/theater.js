@@ -1,5 +1,5 @@
 /**
- * 今日推荐
+ * 院线新片
  * @param  {[type]} require [description]
  * @param  {[type]} exports [description]
  * @param  {[type]} module  [description]
@@ -42,7 +42,7 @@ define(function(require, exports, module) {
 		 * @return {[type]} [description]
 		 */
 		pullEnd:function(){
-			$(document).trigger('dataPllEnd');
+			//$(document).trigger('dataPllEnd');
 		},
 		/**
 		 * 构建json

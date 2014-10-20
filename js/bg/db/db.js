@@ -12,7 +12,7 @@ define(function(require, exports, module) {
 
     Db.init = function(back) {
         Theater.create(function(){
-            console.log('------------Msg db init end');
+            console.log('------------Theater db init end');
             Trailer.create(function() {
                 console.log('------------Trailer db init end');
                 Activity.create(function() {

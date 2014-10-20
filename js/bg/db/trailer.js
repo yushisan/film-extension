@@ -8,7 +8,6 @@ define(function(require, exports, module) {
     var CONFIG = require('../../Config');
      var   TB_VAR_NAME = 'trailer';
       var  TB_SQL = require('./sql')[TB_VAR_NAME];
-     console.log(TB_SQL);
      var   TB_NAME = TB_SQL['name'],
         $ = require('jQuery'),
         Base = require('./base'),
@@ -85,7 +84,7 @@ define(function(require, exports, module) {
                 TB_NAME
             ], function(rs) {
 
-                back && back(rs.rows.item(0).un_read);
+                back && back(rs.rows.item(0).unread_count);
             });
         },
 

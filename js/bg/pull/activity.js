@@ -1,5 +1,5 @@
 /**
- * 今日推荐
+ * 会员活动
  * @param  {[type]} require [description]
  * @param  {[type]} exports [description]
  * @param  {[type]} module  [description]
@@ -49,6 +49,7 @@ define(function(require, exports, module) {
 		 */
 		buildJson: function(item) {
 			return {
+				aid:item.aid,
 				title:item.title,
 				pic:item.pic,
 				url:item.url,
