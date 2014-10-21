@@ -27,12 +27,14 @@ define(function(require, exports, module) {
         //创建表
         'create': 'CREATE TABLE IF NOT EXISTS {0} \
                     (id integer primary key autoincrement, \
-                     cid,title,year,url,pic,dir,actor,brief,checkuptime,douban,newscore,status,flag,is_read)',
+                     cid,title,year,url,pic,dir,actor,brief,checkuptime,douban,newscore,status,flag,is_read,timestamp)',
         //向表中插入数据
-        'inserts': 'insert into {0} \
-                (cid,title,year,url,pic,dir,actor,brief,checkuptime,douban,newscore,status,flag,is_read) \
+        'insert': 'insert into {0} \
+                (cid,title,year,url,pic,dir,actor,brief,checkuptime,douban,newscore,status,flag,is_read,timestamp) \
                 values \
-                ("{1}", \'{2}\', "{3}", "{4}", "{5}", "{6}", "{7}", \'{8}\', "{9}", "{10}", "{11}", {12}, {13}, {14})',
+                ("{1}", \'{2}\', "{3}", "{4}", "{5}", "{6}", "{7}", \'{8}\', "{9}", "{10}", "{11}", {12}, {13}, {14}, {15})',
+                 //更新数据
+        'update': 'update {0} set title=\'{2}\',year="{3}",url="{4}",pic="{5}",dir="{6}",actor="{7}",brief=\'{8}\',checkuptime="{9}",douban="{10}",newscore="{11}",status={12},timestamp={13} where cid="{1}"',
         //检查表中某条数据是否存在
         'check': 'select count(id) as count  from {0} where cid = "{1}"',
         //得到未读消息
@@ -52,6 +54,7 @@ define(function(require, exports, module) {
         //标记所有表中数据为已读
         'update_flag_all': 'update {0} set flag = {1}',
         'delete_more':'delete from {0} where checkuptime > {1}',
+        'delete_old':'delete from {0} where timestamp != {1}',
         //删除表
         'drop_table': 'DROP TABLE {0}',
         'select_by_page': 'select * \
@@ -67,17 +70,20 @@ define(function(require, exports, module) {
         //创建表
         'create': 'CREATE TABLE IF NOT EXISTS {0} \
                     (id integer primary key autoincrement, \
-                     cid,title,year,url,pic,dir,actor,brief,checkuptime,douban,newscore,is_read\
-                    )',
+                     cid,title,year,url,pic,dir,actor,brief,checkuptime,douban,newscore,is_read,\
+                    timestamp)',
         'check':'select count(id) as count from {0}  where cid = "{1}"',
-        'inserts': 'insert into {0} \
-                (cid,title,year,url,pic,dir,actor,brief,checkuptime,douban,newscore,is_read) \
+        'insert': 'insert into {0} \
+                (cid,title,year,url,pic,dir,actor,brief,checkuptime,douban,newscore,is_read,timestamp) \
                 values \
-                ("{1}", \'{2}\', "{3}", "{4}", "{5}", "{6}", "{7}", \'{8}\', "{9}", "{10}", "{11}", {12})',
+                ("{1}", \'{2}\', "{3}", "{4}", "{5}", "{6}", "{7}", \'{8}\', "{9}", "{10}", "{11}",{12},{13})',
+        //更新数据
+        'update': 'update {0} set title=\'{2}\',year="{3}",url="{4}",pic="{5}",dir="{6}",actor="{7}",brief=\'{8}\',checkuptime="{9}",douban="{10}",newscore="{11}",timestamp= {12} where cid="{1}"',
         'select': 'select * from {0} order by id desc limit {1}',
         'unread': 'select count(*) as unread_count from {0} where is_read=0',
         'update_read_all': 'update {0} set is_read = 1',
         'delete': 'delete from {0} where id = {1}',
+        'delete_old':'delete from {0} where timestamp != {1}',
         'select_by_page': 'select * from {0} order by id desc \
                 limit {1}, {2}'
     };
@@ -89,12 +95,14 @@ define(function(require, exports, module) {
         //创建表
         'create': 'CREATE TABLE IF NOT EXISTS {0} \
                     (id integer primary key autoincrement, \
-                    aid,title,pic,url,desc,level,start,end,type,flag,is_read)',
+                    aid,title,pic,url,desc,level,start,end,type,flag,is_read,timestamp)',
         //向表中插入数据
-        'inserts': 'insert into {0} \
-                (aid,title,pic,url,desc,level,start,end,type,flag,is_read) \
+        'insert': 'insert into {0} \
+                (aid,title,pic,url,desc,level,start,end,type,flag,is_read,timestamp) \
                 values \
-                ({1},\'{2}\', "{3}", "{4}", \'{5}\', "{6}", "{7}", "{8}", "{9}", {10}, {11})',
+                ({1},\'{2}\', "{3}", "{4}", \'{5}\', "{6}", "{7}", "{8}", "{9}", {10}, {11},{12})',
+        //更新数据
+        'update': 'update {0} set title=\'{2}\',pic="{3}",url="{4}",desc=\'{5}\',level="{6}",start="{7}",end="{8}",type="{9}",timestamp={10} where aid={1}',
         //检查表中某条数据是否存在
         'check': 'select count(id) as count  from {0} where aid = {1}',
         //得到未读消息
@@ -114,6 +122,7 @@ define(function(require, exports, module) {
         //标记所有表中数据为已读
         'update_flag_all': 'update {0} set flag = {1}',
         'delete_more':'delete from {0} where end < {1}',
+        'delete_old':'delete from {0} where timestamp != {1}',
         //删除表
         'drop_table': 'DROP TABLE {0}',
         'select_by_page': 'select *  from {0} order by id desc limit {1}, {2}'

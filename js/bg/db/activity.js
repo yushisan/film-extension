@@ -30,23 +30,32 @@ define(function(require, exports, module) {
             });
         },
 
-        formatInsert: function(item) {
+        formatInsert: function(item,timestamp) {
             return {
                 checkFields: [
                     item.aid
                 ],
                 insertFields: [
-                    item['aid'],
-                    (item['title'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
+                    item['aid'], (item['title'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
                     item['pic'],
-                    item['url'],
-                    (item['desc'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
+                    item['url'], (item['desc'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
                     item['level'],
                     item['start'],
                     item['end'],
                     item['type'],
                     0,
-                    0
+                    0,
+                    timestamp
+                ],
+                updateFields:[
+                    item['aid'], (item['title'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
+                    item['pic'],
+                    item['url'], (item['desc'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
+                    item['level'],
+                    item['start'],
+                    item['end'],
+                    item['type'],
+                    timestamp
                 ]
             };
         },
@@ -166,7 +175,7 @@ define(function(require, exports, module) {
          * @param  {Function} callback [description]
          * @return {[type]}            [description]
          */
-        deleteMore:function(callback){
+        deleteMore: function(callback) {
             this.executeSql(MSG_SQL['delete_more'], [
                 TB_NAME,
                 new Date().getTime() + 5000

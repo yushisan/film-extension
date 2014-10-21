@@ -30,7 +30,7 @@ define(function(require, exports, module) {
             });
         },
 
-        formatInsert: function(item) {
+        formatInsert: function(item,timestamp) {
             return {
                 checkFields: [
                     item.cid
@@ -47,7 +47,22 @@ define(function(require, exports, module) {
                     item['checkuptime'],
                     item['douban'],
                     (item['newscore'] || '').substring(0, 3),
-                    0
+                    0,
+                    timestamp
+                ],
+                updateFields:[
+                    item['cid'],
+                    (item['title'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
+                    item['year'],
+                    item['url'],
+                    item['pic'],
+                    (item['dir']||'').replace(/\+/g,';'),
+                    (item['actor']||'').replace(/\+/g,';'),
+                    (item['brief'] || '').replace(/"/g, '&quot;').replace(/'/g, '&apos;'),
+                    item['checkuptime'],
+                    item['douban'],
+                    (item['newscore'] || '').substring(0, 3),
+                    timestamp
                 ]
             };
         },

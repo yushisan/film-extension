@@ -74,39 +74,37 @@ define(function(require, exports, module) {
             if (!self.db) {
                 self.db = window['db'] = self.open();
             }
+            var timestamp = new Date().getTime();
             self.db.transaction(function(tx) {
                 for (; order > 0 ? (i < len) : (i >= 0); order > 0 ? i++ : i--) {
                     try {
                         (function(i) {
-                            // self.db.transaction(function(tx) {
-                            var msg = self.formatInsert(data[i]);
-
-                            //console.log(msg);
+                            var msg = self.formatInsert(data[i], timestamp);
                             self._check(tx, msg, function(tx, msg, isExit) {
                                 if (isExit) {
-                                    //console.log("已经存在"+msg[0]);
-                                    if (i == len - 1) {
-                                        console.log('insert time:' + (new Date().getTime() - ddd));
-                                        back && back();
-                                    }
-                                    return;
+                                    self._update(tx, msg.updateFields, function() {
+                                        if (i == len - 1) {
+                                            console.log('insert time:' + (new Date().getTime() - ddd));
+                                            self.delete_old(timestamp);
+                                            back && back();
+                                        }
+                                    });
+                                } else {
+                                    self._insert(tx, msg.insertFields, function() {
+                                        if (i == len - 1) {
+                                            console.log('insert time:' + (new Date().getTime() - ddd));
+                                            self.delete_old(timestamp);
+                                            back && back();
+                                        }
+                                    });
                                 }
-                                console.log('----begin instert data');
-
-                                self._insert(tx, msg.insertFields, function() {
-                                    // console.log('----------------   i:' + i);
-                                    if (i == len - 1) {
-                                        console.log('insert time:' + (new Date().getTime() - ddd));
-                                        back && back();
-                                    }
-                                });
                             });
-                            // });
                         })(i);
                     } catch (e) {
                         continue;
                     }
                 }
+
             });
         },
 
@@ -131,6 +129,20 @@ define(function(require, exports, module) {
             );
         },
 
+        _update: function(tx, fields, back) {
+            var tbSql = SQL[this.tb];
+            console.log(this._formatSql(tbSql['update'], [tbSql['name']].concat(fields)));
+            tx.executeSql(this._formatSql(tbSql['update'], [tbSql['name']].concat(fields)), [],
+                function(tx, rs) {
+                    console.log("_update success");
+                    back && back();
+                },
+                function(tx, error) {
+                    console.log('database error:' + error.message);
+                }
+            );
+        },
+
         /**
          * 插入数据
          * @param  {[type]} fields [description]
@@ -138,19 +150,15 @@ define(function(require, exports, module) {
          */
         _insert: function(tx, fields, back) {
             var tbSql = SQL[this.tb];
-
-            // console.log(this._formatSql(
-            //     tbSql['inserts'], [tbSql['name']].concat(fields)
-            // ));
-            tx.executeSql(this._formatSql(tbSql['inserts'], [tbSql['name']].concat(fields)), [],
+            tx.executeSql(this._formatSql(tbSql['insert'], [tbSql['name']].concat(fields)), [],
                 function(tx, rs) {
                     console.log("_insert  success");
                     back && back();
-                }, function(tx, error) {
+                },
+                function(tx, error) {
                     console.log('database error:' + error.message);
                 }
             );
-            //console.log(this._formatSql(tbSql['inserts'], [tbSql['name']].concat(fields)));
         },
 
         /**
@@ -164,6 +172,22 @@ define(function(require, exports, module) {
             this.executeSql(tbSql['delete'], [
                 tbSql['name'],
                 id
+            ], function() {
+                back && back();
+            });
+        },
+
+        /**
+         * 删除旧数据
+         * @param id
+         * @param back
+         */
+        delete_old: function(timestamp, back) {
+            var tbSql = SQL[this.tb];
+
+            this.executeSql(tbSql['delete_old'], [
+                tbSql['name'],
+                timestamp
             ], function() {
                 back && back();
             });
@@ -229,11 +253,11 @@ define(function(require, exports, module) {
          * @private
          */
         _formatSql: function(sql, arr) {
-        if(sql&&sql.replace){
+            if (sql && sql.replace) {
 
-        }else{
-            console.log(sql);
-        }
+            } else {
+                console.log(sql);
+            }
             return sql.replace(/{(\d+)}/g, function(match, number) {
                 return typeof arr[number] != 'undefined' ? arr[number] : match;
             });
