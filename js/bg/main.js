@@ -15,12 +15,10 @@ seajs.use('../js/bg/main');
  * @return {[type]}         [description]
  */
 define(function(require) {
-	var Local = require('./local/local'),
-		Db = require('./db/db'),
+	var Db = require('./db/db'),
 		Pull = require('./pull/pull'),
 		Notify = require('./notify/notify');
 
-		Local.init();
 		Db.init(function(){ //初始化db
 			
 			Pull.start(function(){ //启动定时拉数据

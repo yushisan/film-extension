@@ -79,7 +79,7 @@ a:visited,a:focus,a:active{outline:0 none!important}
 .mod_activity .activity_cover{float:left;margin-left:10px}
 .mod_activity .activity_cover .cover_link{display:block}
 .mod_activity .activity_cover .cover_link .cover_img{display:block;height:105px;width:220px}
-.mod_activity .activity_info{padding: 5px 10px;overflow:hidden;position:relative;height:105px}
+.mod_activity .activity_info{padding: 5px 10px;overflow:hidden;position:relative;}
 .mod_activity .activity_info .title{font-family:'microsoft yahei';font-weight:normal;margin-top:-8px;margin-bottom:5px;font-size: 16px;}
 .mod_activity .activity_info .txt{color:#999;line-height:28px;font-size: 13px;}
 .mod_activity .activity_info .txt .tips{color:#dc1f01;margin-right:3px}

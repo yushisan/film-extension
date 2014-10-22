@@ -55,11 +55,6 @@ define(function(require, exports, module) {
         function rendTheaterPage(back) {
             DbTheater.selectByPage(function(data) {
                 if (data.length <= 0) {
-                    /*
-                    setTimeout(function() {
-                        rendTheaterPage(back);
-                    }, 500);
-                    */
                     return;
                 }
                 if (pageNo == 1) {
@@ -117,8 +112,6 @@ define(function(require, exports, module) {
                 len = data.length,
                 getStr = ty == 1 ? getTheaterHtml : ty == 2 ? getTrailerHtml : ty == 3 ? getActivityHtml : null;
 
-            // len = len > 30 ? 30 : len;
-
             for (; i < len; i++) {
                 html += getStr(data[i]);
             }
@@ -128,7 +121,7 @@ define(function(require, exports, module) {
         function getTheaterHtml(obj) {
 
             return '<div class="film_detail" style="margin-top: 40px;position: relative;">\
-                    <i class="' + (obj.is_read == 0 ? 'item-new' : 'item-new item-new-old') + '" ></i>\
+                    <i class="' + (obj.read == 0 ? 'item-new' : 'item-new item-new-old') + '" ></i>\
                     <div class="summary">\
                         <div class="summary_poster" >\
                             <a href="' + obj.url + '" class="mod_video_lists_poster">\
@@ -162,7 +155,7 @@ define(function(require, exports, module) {
         function getTrailerHtml(obj) {
 
             return '<div class="film_detail" style="margin-top: 40px;position: relative;">\
-                    <i class="' + (obj.is_read == 0 ? 'item-new' : 'item-new item-new-old') + '" ></i>\
+                    <i class="' + (obj.read == 0 ? 'item-new' : 'item-new item-new-old') + '" ></i>\
                     <div class="summary">\
                         <div class="summary_poster" >\
                             <a href="' + obj.url + '" class="mod_video_lists_poster">\
@@ -194,7 +187,7 @@ define(function(require, exports, module) {
 
         function getActivityHtml(obj) {
             return '<div class="mod_activity" style="margin-top: 40px;position: relative;">\
-            <i class="' + (obj.is_read == 0 ? 'item-new' : 'item-new item-new-old') + '" ></i>\
+            <i class="' + (obj.read == 0 ? 'item-new' : 'item-new item-new-old') + '" ></i>\
             <div class="activity_cover">\
                 <a href="' + obj.url + '" target="_blank" class="cover_link">\
                     <img src="' + obj.pic + '" class="cover_img" alt="">\
@@ -239,7 +232,8 @@ define(function(require, exports, module) {
             pageNo = 1;
 
             rendPage(order, function() {
-
+                self.find('.icon-content').html('');
+                self.find('.title-icon').hide();
                 $('#J_film_tb_content').scrollTop(0);
                 self.siblings('.active').removeClass('active');
                 self.addClass('active');
@@ -276,36 +270,35 @@ define(function(require, exports, module) {
 
         DbTheater.getUnReadCount(function(count) {
             var tip = $('#J_tip_theater');
-            console.log('----------------theater count = ' + count);
+            //console.log('----------------theater count = ' + count);
             if (count == 0) {
                 tip.hide();
             } else {
                 $('#J_tip_theater_num').html(count);
                 tip.show();
             }
-            DbActivity.getUnReadCount(function(count) {
-                tip = $('#J_tip_activity');
-                console.log('----------------activity count = ' + count);
+            DbTrailer.getUnReadCount(function(count) {
+                var tip = $('#J_tip_trailer');
+                //console.log('----------------trailer count = ' + count);
                 if (count == 0) {
                     tip.hide();
                 } else {
-                    $('#J_tip_activity_num').html(count);
+                    $('#J_tip_trailer_num').html(count);
                     tip.show();
                 }
-                Notify.clearIconText();
+                DbActivity.getUnReadCount(function(count) {
+                    tip = $('#J_tip_activity');
+                    //console.log('----------------activity count = ' + count);
+                    if (count == 0) {
+                        tip.hide();
+                    } else {
+                        $('#J_tip_activity_num').html(count);
+                        tip.show();
+                    }
+                    Notify.clearIconText();
+                });
             });
-        });
 
-
-        DbTrailer.getUnReadCount(function(count) {
-            var tip = $('#J_tip_trailer');
-            console.log('----------------trailer count = ' + count);
-            if (count == 0) {
-                tip.hide();
-            } else {
-                $('#J_tip_trailer_num').html(count);
-                tip.show();
-            }
         });
 
 

@@ -4,7 +4,7 @@
  * @return {[type]}         [description]
  */
 define(function(require, exports, module) {
-    console.log('---------db');
+    //console.log('---------db');
     var SQL = require('./sql'),
         SQL_G = SQL['global'],
         DB_CFG = SQL['db'],
@@ -30,7 +30,6 @@ define(function(require, exports, module) {
 
         /**
          * 创建表
-         * @param  {[type]} name  [表名]
          * @param  {[type]} back [回调]
          * @return {[type]}      [description]
          */
@@ -85,16 +84,14 @@ define(function(require, exports, module) {
                                     self._update(tx, msg.updateFields, function() {
                                         if (i == len - 1) {
                                             console.log('insert time:' + (new Date().getTime() - ddd));
-                                            self.delete_old(timestamp);
-                                            back && back();
+                                            self.delete_old(timestamp,back);
                                         }
                                     });
                                 } else {
                                     self._insert(tx, msg.insertFields, function() {
                                         if (i == len - 1) {
                                             console.log('insert time:' + (new Date().getTime() - ddd));
-                                            self.delete_old(timestamp);
-                                            back && back();
+                                            self.delete_old(timestamp,back);
                                         }
                                     });
                                 }
@@ -116,10 +113,6 @@ define(function(require, exports, module) {
          */
         _check: function(tx, msg, back) {
             var tbSql = SQL[this.tb];
-
-            // console.log(this._formatSql(
-            //         tbSql['check'], [tbSql['name']].concat(msg.checkFields)
-            //     ));
             tx.executeSql(this._formatSql(
                     tbSql['check'], [tbSql['name']].concat(msg.checkFields)
                 ), [],
@@ -131,7 +124,6 @@ define(function(require, exports, module) {
 
         _update: function(tx, fields, back) {
             var tbSql = SQL[this.tb];
-            console.log(this._formatSql(tbSql['update'], [tbSql['name']].concat(fields)));
             tx.executeSql(this._formatSql(tbSql['update'], [tbSql['name']].concat(fields)), [],
                 function(tx, rs) {
                     console.log("_update success");
@@ -152,7 +144,7 @@ define(function(require, exports, module) {
             var tbSql = SQL[this.tb];
             tx.executeSql(this._formatSql(tbSql['insert'], [tbSql['name']].concat(fields)), [],
                 function(tx, rs) {
-                    console.log("_insert  success");
+                    //console.log("_insert  success");
                     back && back();
                 },
                 function(tx, error) {
@@ -184,7 +176,6 @@ define(function(require, exports, module) {
          */
         delete_old: function(timestamp, back) {
             var tbSql = SQL[this.tb];
-
             this.executeSql(tbSql['delete_old'], [
                 tbSql['name'],
                 timestamp
@@ -230,21 +221,18 @@ define(function(require, exports, module) {
                 db = self.db || window['db'];
 
             if (!db) {
-                console.log('创建或打开数据库');
+                console.log('创建/打开数据库');
                 db = self.open();
             }
             db.transaction(function(tx) {
                 tx.executeSql(self._formatSql(sql, params), [],
-                    // tx.executeSql(sql, params,
-
                     function(tx, rs) {
                         back && back(rs);
                     },
                     function(tx, error) {
+                         console.log('database error:' + error.message);
                         errorBack && errorBack(error);
-                        console.log('database error:' + error.message);
                     });
-                //console.log(self._formatSql(sql, params));
             });
         },
 

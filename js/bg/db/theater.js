@@ -15,7 +15,6 @@ define(function(require, exports, module) {
 
     var ddd = new Date().getTime();
 
-
     Theater.super = Base;
     $.extend(true, Theater, Base, {
         tb: TB_VAR_NAME,
@@ -28,13 +27,6 @@ define(function(require, exports, module) {
             this.super.create.call(this, function() {
                 back && back();
             });
-            // self.drop(function() {
-/*
-            self.executeSql(MSG_SQL['create'], [TB_NAME], function() {
-
-            });
-*/
-            // });
         },
 
         formatInsert: function(item,timestamp) {
@@ -159,22 +151,6 @@ define(function(require, exports, module) {
             });
 
         },
-        /**
-         * 更新消息状态(是否已提醒)
-         * @param msg_id
-         * @param status
-         * @param callback
-         */
-        updateStatus: function(msg_id, status, callback) {
-            console.log('-------------updateStatusMsg');
-            this.executeSql(MSG_SQL['update_flag'], [
-                TB_NAME,
-                status,
-                msg_id
-            ], function() {
-                callback && callback();
-            });
-        },
 
         /**
          * 把所有消息标记为已通知
@@ -187,21 +163,9 @@ define(function(require, exports, module) {
                 callback && callback();
             });
         },
+
         /**
-         * 删除比当前时间晚的数据(临时解决预发数据上线bug)
-         * @param  {Function} callback [description]
-         * @return {[type]}            [description]
-         */
-        deleteMore:function(callback){
-            this.executeSql(MSG_SQL['delete_more'], [
-                TB_NAME,
-                new Date().getTime() + 5000
-            ], function() {
-                callback && callback();
-            });
-        },
-        /**
-         * 删除msg表
+         * 删除表
          */
         drop: function(callback) {
             this.executeSql(MSG_SQL['drop_table'], [
