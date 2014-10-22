@@ -24,10 +24,6 @@ define(function(require, exports, module) {
             var $1 = args[1],
                 $3 = args[3];
             var param = 'film.extension.' + _getBrowserParam();
-            //var install = _isInstall() ? '' : ('&' + param + '_install');
-
-            //是否是最新版本
-            //param = localStorage.getItem('newVersion') == CONFIG['version'] ? param + 'new' : param;
 
             return $1 + '?ptag=' + param + ($3 ? '&' + $3 : '');
         });

@@ -20,6 +20,7 @@ define(function(require, exports, module) {
 
 			url: Config['url']['theater'], //请求地址
 			params: { //请求参数
+				_t:new Date().getTime()
 			},
 			dataType: 'text', //数据类型
 			time: Config['timer']['theater_pull'],

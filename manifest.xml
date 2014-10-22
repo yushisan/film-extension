@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension>
-	<id>com.qq.film1</id>ssss
+	<id>com.qq.film</id>ssss
 	<name>好莱坞影院</name>
 	<description>好莱坞会员是由腾讯视频面向广大用户推出的一项尊贵增值包月会员服务，会员可在好莱坞影院film.qq.com上观看来自华纳、环球、迪士尼等好莱坞电影豪门的上千部经典大片，且享有观看国内最新院线影片网络首播的特权。</description>
 	<show_icon>true</show_icon>
-	<version>0.1.0</version>
+	<version>0.1.5</version>
 	<author>好莱坞影院</author>
 	<request_api_version>3</request_api_version>
 	<popup page="page/popup.html" width="530" height="600"></popup>

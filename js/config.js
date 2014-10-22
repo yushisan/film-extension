@@ -4,8 +4,6 @@ define(function(require, exports, module) {
 
     module.exports = CONFIG;
 
-    CONFIG['version'] = '0.1.2';
-
     //请求数据地址
     CONFIG['url'] = {
         'theater':'http://sns.video.qq.com/fcgi-bin/dlib/dataout_pc?auto_id=1471&otype=json&callback=jsonp',

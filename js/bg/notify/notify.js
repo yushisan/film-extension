@@ -27,7 +27,6 @@ define(function(require, exports, module) {
                 if (self.firstMsg) {
                     self.firstMsg = false;
                     self.firstShowMsg();
-                    self.checkVersion();
                 } else {
                     self.setIconText();
                     DbTheater.select(CONFIG['msg_flag']['new'], function(data) {
@@ -72,15 +71,6 @@ define(function(require, exports, module) {
                     }, 1);
                 }
             });
-        },
-
-        /**
-         * 检查版本
-         * @return {[type]} [description]
-         */
-        checkVersion: function() {
-            var self = this;
-            //TODO:检测新版本
         },
 
         /**

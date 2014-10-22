@@ -35,7 +35,6 @@ define(function(require, exports, module) {
          */
         create: function(back) {
             var tbSql = SQL[this.tb];
-
             this.executeSql(tbSql['create'], [tbSql['name']], function() {
                 back && back();
             });
