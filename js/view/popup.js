@@ -135,7 +135,7 @@ define(function(require, exports, module) {
                             <p class="rating">\
                                 <span class="score_wrap">\
                                     <strong class="score_tx">' + obj.newscore + '</strong>\
-                                    <span class="score_douban">（豆瓣: ' + obj.douban + '）</span>\
+                                   ' + (obj.douban > 0 ? '<span class="score_douban">（豆瓣: ' + obj.douban + '）</span>' : '') + ' \
                                 </span>\
                             </p>\
                             <p class="director" id="director">\
@@ -168,7 +168,7 @@ define(function(require, exports, module) {
                             <p class="rating">\
                                 <span class="score_wrap">\
                                     <strong class="score_tx">' + obj.newscore + '</strong>\
-                                    <span class="score_douban">（豆瓣: ' + obj.douban + '）</span>\
+                                 ' + (obj.douban > 0 ? '<span class="score_douban">（豆瓣: ' + obj.douban + '）</span>' : '') + ' \
                                 </span>\
                             </p>\
                             <p class="director" id="director">\

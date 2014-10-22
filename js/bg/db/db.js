@@ -12,11 +12,11 @@ define(function(require, exports, module) {
 
     Db.init = function(back) {
         Theater.create(function(){
-            console.log('------------Theater db init end');
+            //console.log('------------Theater db init end');
             Trailer.create(function() {
-                console.log('------------Trailer db init end');
+                //console.log('------------Trailer db init end');
                 Activity.create(function() {
-                    console.log('------------Activity db init end');
+                    //console.log('------------Activity db init end');
                     back && back();
                 });
             });

@@ -33,7 +33,7 @@ define(function(require, exports, module) {
         start: function(back) {
             var self = this;
 
-            console.log(self.attr.url);
+            //console.log(self.attr.url);
 
             self._startBack = back;
             self.pull();
@@ -59,7 +59,7 @@ define(function(require, exports, module) {
                     console.log(XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
                 }
             });
-            console.log('定时 pull 数据 耗时:' + (new Date().getTime() - ddd));
+            //console.log('定时 pull 数据 耗时:' + (new Date().getTime() - ddd));
             setTimeout(function() {
                 self.pull();
             }, attr.time);

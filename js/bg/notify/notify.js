@@ -81,7 +81,7 @@ define(function(require, exports, module) {
             var self = this,
                 i = 0;
 
-            console.log('----------------firstShowMessage');
+            //console.log('----------------firstShowMessage');
             self.setIconText();
             // 查找最新的1条活动
             DbActivity.select(CONFIG['msg_flag']['new'], function(data) {
@@ -182,12 +182,12 @@ define(function(require, exports, module) {
          * @param {[type]} text [description]
          */
         setIconText: function() {
-            console.log('---------------setIconText');
+            //console.log('---------------setIconText');
             DbTheater.getUnReadCount(function(theatercount) {
                 DbTrailer.getUnReadCount(function(trailercount) {
                     DbActivity.getUnReadCount(function(activitycount) {
                         var count = theatercount + trailercount + activitycount;
-                        console.log('---------------setIconText count:' + count);
+                        //console.log('---------------setIconText count:' + count);
                         if (count == 0) {
                             count = "";
                         }

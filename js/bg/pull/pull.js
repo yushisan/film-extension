@@ -11,11 +11,11 @@ define(function(require, exports, module) {
 
     Pull.start = function(back) {
         Theater.start(function() {
-            console.log('-------theater pull end---');
+            //console.log('-------theater pull end---');
             Trailer.start(function() {
-                console.log('-------trailer pull end---');
+                //console.log('-------trailer pull end---');
                 Activity.start(function() {
-                    console.log('-------activity pull end---');
+                    //console.log('-------activity pull end---');
                     back && back();
                 });
 

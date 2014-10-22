@@ -68,7 +68,7 @@ define(function(require, exports, module) {
                 len = Math.min(data.length, 100),
                 i = order > 0 ? 0 : (len - 1);
 
-            console.log('----insterts data');
+            //console.log('----insterts data');
             if (!self.db) {
                 self.db = window['db'] = self.open();
             }
@@ -82,14 +82,14 @@ define(function(require, exports, module) {
                                 if (isExit) {
                                     self._update(tx, msg.updateFields, function() {
                                         if (i == len - 1) {
-                                            console.log('insert time:' + (new Date().getTime() - ddd));
+                                            //console.log('insert time:' + (new Date().getTime() - ddd));
                                             self.delete_old(timestamp,back);
                                         }
                                     });
                                 } else {
                                     self._insert(tx, msg.insertFields, function() {
                                         if (i == len - 1) {
-                                            console.log('insert time:' + (new Date().getTime() - ddd));
+                                            //console.log('insert time:' + (new Date().getTime() - ddd));
                                             self.delete_old(timestamp,back);
                                         }
                                     });
@@ -125,7 +125,7 @@ define(function(require, exports, module) {
             var tbSql = SQL[this.tb];
             tx.executeSql(this._formatSql(tbSql['update'], [tbSql['name']].concat(fields)), [],
                 function(tx, rs) {
-                    console.log("_update success");
+                    //console.log("_update success");
                     back && back();
                 },
                 function(tx, error) {
@@ -220,7 +220,7 @@ define(function(require, exports, module) {
                 db = self.db || window['db'];
 
             if (!db) {
-                console.log('创建/打开数据库');
+                //console.log('创建/打开数据库');
                 db = self.open();
             }
             db.transaction(function(tx) {

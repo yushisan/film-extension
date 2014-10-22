@@ -21,5 +21,6 @@
     "default_popup": "./page/popup.html",
     "default_title": "好莱坞影院",
     "default_icon": "./img/icon_16.png"
-  }
+  },
+  "update_url": "http://upext.chrome.360.cn/intf.php?method=ExtUpdate.query"
 }
