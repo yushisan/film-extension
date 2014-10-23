@@ -69,6 +69,7 @@ define(function(require, exports, module) {
             case 'liebao':
             case 'sogou':
             case 'taobao':
+            case 'baidu':
                 key = shell;
                 break;
             case '360':

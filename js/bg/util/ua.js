@@ -233,6 +233,8 @@ define(function(require, exports, module) {
                         shell = 'taobao';
                     }else if(/SE.*MetaSr.*/.test(ua)){ //搜狗
                         shell = 'sogou';
+                    }else if(/BIDUBrowser/.test(ua)){ //百度浏览器
+                        shell = 'baidu';
                     }
                 }
                 // Safari
