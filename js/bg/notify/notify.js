@@ -31,8 +31,8 @@ define(function(require, exports, module) {
                     self.setIconText();
                     DbTheater.select(CONFIG['msg_flag']['new'], function(data) {
                         if (data.length > 0) {
-                            var num=data.length>3?3:data.length;
-                            for (var i =num - 1; i >= 0; i--) {
+                            var num = data.length > 3 ? 3 : data.length;
+                            for (var i = num - 1; i >= 0; i--) {
                                 var item = data[i];
                                 var msg = {
                                     id: item.id,
@@ -52,7 +52,7 @@ define(function(require, exports, module) {
                     // 查找最新的一条活动
                     DbActivity.select(CONFIG['msg_flag']['new'], function(data) {
                         if (data.length > 0) {
-                            var num=data.length>2?2:data.length;
+                            var num = data.length > 2 ? 2 : data.length;
                             for (var i = num - 1; i >= 0; i--) {
                                 var item = data[i];
                                 var msg = {
@@ -129,10 +129,13 @@ define(function(require, exports, module) {
             var self = this;
             self.convertImgToBase64(msg.img, function(base64Img) {
                 self.show({
+                    'id':msg.id,
                     'img': base64Img,
+                    'pic':msg.img,
                     'title': msg.title,
                     'text': msg.text,
-                    'link': msg.link
+                    'link': msg.link,
+                    'type':msg.type
                 }, null, function() { //click back
                     if (msg.type = 'theater') {
                         DbTheater.updateRead(msg.id, function() {
@@ -156,25 +159,51 @@ define(function(require, exports, module) {
          */
         show: function(msg, showBack, clickBack) {
             var self = this;
-            var notification = new Notification(msg.title, {
-                icon: msg.img,
-                body: msg.text || ''
-            });
-            notification.onclick = function() { // 点击打开链接
-                window.open(Stat.addUrlStat(msg.link));
-                notification.close();
-                clickBack && clickBack();
-            };
-            //notification.show();
-            (function(n) {
-                setTimeout(function() {
-                    if (n.close) {
-                        n.close();
-                    }
-                }, 15 * 1000);
-            })(notification);
+            var nid=msg.type+"_"+msg.id;
+            if (chrome.notifications) {
+                console.log('创建提示');
+                console.log(nid);
+                console.log(msg);
+                chrome.notifications.create(nid, {
+                  type: "basic",
+                  title: msg.title,
+                  message: msg.text,
+                  iconUrl: msg.pic
+                },function(){
+                    console.log('提示完成');
+                    showBack();
+                });
+                (function(n) {
+                    setTimeout(function() {
+                        chrome.notifications.clear(nid, function(){});
+                    }, 15 * 1000);
+                })(notification);
 
-            showBack && showBack();
+                chrome.notifications.onClicked.addListener(function(notificationId){
+                    console.log(notificationId);
+                    clickBack && clickBack();
+                });
+            } else {
+                var notification = new Notification(msg.title, {
+                    icon: msg.img,
+                    body: msg.text || ''
+                });
+                notification.onclick = function() { // 点击打开链接
+                    window.open(Stat.addUrlStat(msg.link));
+                    notification.close();
+                    clickBack && clickBack();
+                };
+                //notification.show();
+                (function(n) {
+                    setTimeout(function() {
+                        if (n.close) {
+                            n.close();
+                        }
+                    }, 15 * 1000);
+                })(notification);
+
+                showBack && showBack();
+            }
         },
 
         /**
