@@ -66,6 +66,7 @@ define(function(require, exports, module) {
 
         switch (shell) {
             case 'chrome':
+            case 'qq':
             case 'liebao':
             case 'sogou':
             case 'taobao':

@@ -12,7 +12,7 @@ define(function(require, exports, module) {
     function numberify(s) {
         var c = 0;
         // convert '1.2.3.4' to 1.234
-        return parseFloat(s.replace(/\./g, function () {
+        return parseFloat(s.replace(/\./g, function() {
             return (c++ === 0) ? '.' : '';
         }));
     }
@@ -42,7 +42,8 @@ define(function(require, exports, module) {
         var EMPTY = '',
             os,
             core = EMPTY,
-            shell = EMPTY, m,
+            shell = EMPTY,
+            m,
             IE_DETECT_RANGE = [6, 9],
             ieVersion,
             v,
@@ -227,14 +228,16 @@ define(function(require, exports, module) {
                 // Chrome
                 else if ((m = ua.match(/Chrome\/([\d.]*)/)) && m[1]) {
                     UA[shell = 'chrome'] = numberify(m[1]);
-                    if(/LBBROWSER/.test(ua)){ //猎豹
+                    if (/QQBrowser/.test(ua)) { //qq浏览器
+                        shell = 'qq';
+                    } else if (/LBBROWSER/.test(ua)) { //猎豹
                         shell = 'liebao';
-                    }else if(/TaoBrowser/.test(ua)){ //淘宝浏览器
-                        shell = 'taobao';
-                    }else if(/SE.*MetaSr.*/.test(ua)){ //搜狗
+                    } else if (/SE.*MetaSr.*/.test(ua)) { //搜狗
                         shell = 'sogou';
-                    }else if(/BIDUBrowser/.test(ua)){ //百度浏览器
+                    } else if (/BIDUBrowser/.test(ua)) { //百度浏览器
                         shell = 'baidu';
+                    } else if (/TaoBrowser/.test(ua)) { //淘宝浏览器
+                        shell = 'taobao';
                     }
                 }
                 // Safari
@@ -349,7 +352,7 @@ define(function(require, exports, module) {
     }
 
     var UA = getDescriptorFromUserAgent(ua);
-    
+
     module.exports = UA;
 
 });

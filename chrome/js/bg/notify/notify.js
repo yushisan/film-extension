@@ -129,13 +129,13 @@ define(function(require, exports, module) {
             var self = this;
             self.convertImgToBase64(msg.img, function(base64Img) {
                 self.show({
-                    'id':msg.id,
+                    'id': msg.id,
                     'img': base64Img,
-                    'pic':msg.img,
+                    'pic': msg.img,
                     'title': msg.title,
                     'text': msg.text,
                     'link': msg.link,
-                    'type':msg.type
+                    'type': msg.type
                 }, null, function() { //click back
                     if (msg.type = 'theater') {
                         DbTheater.updateRead(msg.id, function() {
@@ -159,51 +159,53 @@ define(function(require, exports, module) {
          */
         show: function(msg, showBack, clickBack) {
             var self = this;
-            var nid=msg.type+"_"+msg.id;
+            /*
+            var nid = msg.type + "_" + msg.id;
             if (chrome.notifications) {
                 console.log('创建提示');
                 console.log(nid);
                 console.log(msg);
                 chrome.notifications.create(nid, {
-                  type: "basic",
-                  title: msg.title,
-                  message: msg.text,
-                  iconUrl: msg.pic
-                },function(){
-                    console.log('提示完成');
-                    showBack();
+                    type: "basic",
+                    title: msg.title,
+                    message: msg.text,
+                    iconUrl: msg.pic
+                }, function() {
+                    //console.log('提示完成');
+                    showBack && showBack();
                 });
                 (function(n) {
                     setTimeout(function() {
-                        chrome.notifications.clear(nid, function(){});
+                        chrome.notifications.clear(nid, function() {});
                     }, 15 * 1000);
                 })(notification);
 
-                chrome.notifications.onClicked.addListener(function(notificationId){
+                chrome.notifications.onClicked.addListener(function(notificationId) {
                     console.log(notificationId);
-                    clickBack && clickBack();
-                });
-            } else {
-                var notification = new Notification(msg.title, {
-                    icon: msg.img,
-                    body: msg.text || ''
-                });
-                notification.onclick = function() { // 点击打开链接
                     window.open(Stat.addUrlStat(msg.link));
-                    notification.close();
                     clickBack && clickBack();
-                };
-                //notification.show();
-                (function(n) {
-                    setTimeout(function() {
-                        if (n.close) {
-                            n.close();
-                        }
-                    }, 15 * 1000);
-                })(notification);
-
-                showBack && showBack();
+                });
             }
+            */
+            var notification = new Notification(msg.title, {
+                icon: msg.img,
+                body: msg.text || ''
+            });
+            notification.onclick = function() { // 点击打开链接
+                window.open(Stat.addUrlStat(msg.link));
+                notification.close();
+                clickBack && clickBack();
+            };
+            //notification.show();
+            (function(n) {
+                setTimeout(function() {
+                    if (n.close) {
+                        n.close();
+                    }
+                }, 15 * 1000);
+            })(notification);
+
+            showBack && showBack();
         },
 
         /**
