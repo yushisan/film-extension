@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "好莱坞影院",
+  "version": "0.1.6",
+  "description": "好莱坞会员是由腾讯视频面向广大用户推出的一项尊贵增值包月会员服务，会员可在好莱坞影院film.qq.com上观看来自华纳、环球、迪士尼等好莱坞电影豪门的上千部经典大片，且享有观看国内最新院线影片网络首播的特权。",
+  "permissions": ["cookies", "tabs", "notifications","http://*.qq.com/*","http://*.gtimg.cn/*"],
+  "background": { "page":"page/background.html" },
+  "content_scripts" : [
+      {
+         "js" : [
+            "js/content/film-site.js"
+         ],
+         "matches" : [
+            "http://film.qq.com/*"
+         ]
+      }
+   ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "icons": {"16": "./img/icon_16.png", "48": "./img/icon_48.png", "128": "./img/icon_128.png"},
+  "browser_action": {
+    "default_popup": "./page/popup.html",
+    "default_title": "好莱坞影院",
+    "default_icon": "./img/icon_16.png"
+  }
+}
